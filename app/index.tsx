@@ -1,16 +1,16 @@
 import React, { useState } from 'react';
 import {
-    FlatList,
-    SafeAreaView,
-    StyleSheet,
+  FlatList,
+  SafeAreaView,
+  StyleSheet,
 } from 'react-native';
-import CountryListItem from '../src/components/CountryListItem';
 import CountryDetailModal from '../src/components/CountryDetailModal';
+import CountryListItem from '../src/components/CountryListItem';
 import EmptyState from '../src/components/EmptyState';
 import ErrorState from '../src/components/ErrorState';
 import LoadingState from '../src/components/LoadingState';
 import SearchBar from '../src/components/SearchBar';
-import { Region, Country } from '../src/types/Country';
+import { Country, Region } from '../src/types/Country';
 
 // Mock data for UI testing - replace with real API later
 const mockCountries: Country[] = [
@@ -88,6 +88,7 @@ export default function Index() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedRegion, setSelectedRegion] = useState<Region>('All');
   const [favorites, setFavorites] = useState<Set<string>>(new Set());
+  const [notes, setNotes] = useState<Map<string, string>>(new Map());
   const [loading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [selectedCountry, setSelectedCountry] = useState<Country | null>(null);
@@ -112,10 +113,27 @@ export default function Index() {
       const newFavorites = new Set(prev);
       if (newFavorites.has(countryCode)) {
         newFavorites.delete(countryCode);
+        setNotes((prevNotes) => {
+          const newNotes = new Map(prevNotes);
+          newNotes.delete(countryCode);
+          return newNotes;
+        });
       } else {
         newFavorites.add(countryCode);
       }
       return newFavorites;
+    });
+  };
+
+  const handleNoteChange = (countryCode: string, note: string) => {
+    setNotes((prev) => {
+      const newNotes = new Map(prev);
+      if (note.trim()) {
+        newNotes.set(countryCode, note);
+      } else {
+        newNotes.delete(countryCode);
+      }
+      return newNotes;
     });
   };
 
@@ -130,6 +148,8 @@ export default function Index() {
       onPress={() => handleCountryPress(item)}
       onFavoritePress={() => handleFavoritePress(item.cca3)}
       isFavorite={favorites.has(item.cca3)}
+      note={notes.get(item.cca3) || ''}
+      onNoteChange={(note) => handleNoteChange(item.cca3, note)}
     />
   );
 

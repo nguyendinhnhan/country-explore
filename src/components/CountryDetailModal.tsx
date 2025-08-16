@@ -1,16 +1,16 @@
+import { Ionicons } from '@expo/vector-icons';
 import React from 'react';
 import {
-  View,
-  Text,
+  Dimensions,
   Image,
-  ScrollView,
-  TouchableOpacity,
-  StyleSheet,
   Modal,
   SafeAreaView,
-  Dimensions,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
 import { Country } from '../types/Country';
 
 interface CountryDetailModalProps {

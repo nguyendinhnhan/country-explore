@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import {
-    FlatList,
-    SafeAreaView,
-    StyleSheet,
+  FlatList,
+  SafeAreaView,
+  StyleSheet,
 } from 'react-native';
-import CountryListItem from '../src/components/CountryListItem';
 import CountryDetailModal from '../src/components/CountryDetailModal';
+import CountryListItem from '../src/components/CountryListItem';
 import EmptyState from '../src/components/EmptyState';
 import { Country, FavoriteCountry } from '../src/types/Country';
 
@@ -43,6 +43,16 @@ export default function Favorites() {
     setFavorites((prev) => prev.filter((country) => country.cca3 !== countryCode));
   };
 
+  const handleNoteChange = (countryCode: string, note: string) => {
+    setFavorites((prev) => 
+      prev.map((country) => 
+        country.cca3 === countryCode 
+          ? { ...country, note: note } 
+          : country
+      )
+    );
+  };
+
   const handleModalClose = () => {
     setModalVisible(false);
     setSelectedCountry(null);
@@ -54,6 +64,8 @@ export default function Favorites() {
       onPress={() => handleCountryPress(item)}
       onFavoritePress={() => handleRemoveFavorite(item.cca3)}
       isFavorite={true}
+      note={item.note || ''}
+      onNoteChange={(note) => handleNoteChange(item.cca3, note)}
     />
   );
 

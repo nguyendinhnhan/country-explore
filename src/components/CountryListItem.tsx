@@ -1,12 +1,13 @@
-import React from 'react';
-import {
-  View,
-  Text,
-  Image,
-  TouchableOpacity,
-  StyleSheet,
-} from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import React, { useState } from 'react';
+import {
+  Image,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import { Country } from '../types/Country';
 
 interface CountryListItemProps {
@@ -15,6 +16,8 @@ interface CountryListItemProps {
   onFavoritePress?: () => void;
   isFavorite?: boolean;
   showFavoriteButton?: boolean;
+  note?: string;
+  onNoteChange?: (note: string) => void;
 }
 
 export default function CountryListItem({
@@ -23,49 +26,91 @@ export default function CountryListItem({
   onFavoritePress,
   isFavorite = false,
   showFavoriteButton = true,
+  note = '',
+  onNoteChange,
 }: CountryListItemProps) {
-  return (
-    <TouchableOpacity style={styles.container} onPress={onPress}>
-      <Image
-        source={{ uri: country.flags.png }}
-        style={styles.flag}
-        resizeMode="cover"
-      />
-      
-      <View style={styles.infoContainer}>
-        <Text style={styles.countryName} numberOfLines={1}>
-          {country.name.common}
-        </Text>
-        <Text style={styles.region}>
-          {country.region}
-        </Text>
-      </View>
+  const [isEditingNote, setIsEditingNote] = useState(false);
 
-      {showFavoriteButton && onFavoritePress && (
-        <TouchableOpacity
-          onPress={onFavoritePress}
-          style={styles.favoriteButton}
-          hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
-        >
-          <Ionicons
-            name={isFavorite ? "star" : "star-outline"}
-            size={20}
-            color={isFavorite ? "#FFD700" : "#8E8E93"}
-          />
-        </TouchableOpacity>
+  const handleNoteSubmit = () => {
+    setIsEditingNote(false);
+  };
+
+  const handleNotePress = () => {
+    if (isFavorite) {
+      setIsEditingNote(true);
+    }
+  };
+
+  return (
+    <View style={styles.wrapper}>
+      <TouchableOpacity 
+        style={styles.container} 
+        onPress={onPress}
+      >
+        <Image
+          source={{ uri: country.flags.png }}
+          style={styles.flag}
+          resizeMode="cover"
+        />
+        
+        <View style={styles.infoContainer}>
+          <Text style={styles.countryName} numberOfLines={1}>
+            {country.name.common}
+          </Text>
+          <Text style={styles.region}>
+            {country.region}
+          </Text>
+        </View>
+
+        {showFavoriteButton && onFavoritePress && (
+          <TouchableOpacity
+            onPress={onFavoritePress}
+            style={styles.favoriteButton}
+            hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+          >
+            <Ionicons
+              name={isFavorite ? "star" : "star-outline"}
+              size={20}
+              color={isFavorite ? "#FFD700" : "#8E8E93"}
+            />
+          </TouchableOpacity>
+        )}
+      </TouchableOpacity>
+
+      {/* Note input - only show when favorited */}
+      {isFavorite && (
+        <View style={styles.noteContainer}>
+          {isEditingNote ? (
+            <TextInput
+              style={styles.noteInput}
+              placeholder="Add a note about this country..."
+              value={note}
+              onChangeText={onNoteChange}
+              onSubmitEditing={handleNoteSubmit}
+              onBlur={handleNoteSubmit}
+              autoFocus
+              returnKeyType="done"
+              maxLength={100}
+            />
+          ) : (
+            <TouchableOpacity style={styles.noteDisplayContainer} onPress={handleNotePress}>
+              <Ionicons name="create-outline" size={16} color="#8E8E93" />
+              <Text style={styles.noteDisplay}>
+                {note || "Tap to add a note..."}
+              </Text>
+            </TouchableOpacity>
+          )}
+        </View>
       )}
-    </TouchableOpacity>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#FFFFFF',
-    padding: 16,
+  wrapper: {
     marginHorizontal: 16,
     marginVertical: 4,
+    backgroundColor: '#FFFFFF',
     borderRadius: 12,
     shadowColor: '#000',
     shadowOffset: {
@@ -75,6 +120,11 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.08,
     shadowRadius: 2,
     elevation: 2,
+  },
+  container: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 16,
   },
   flag: {
     width: 50,
@@ -98,5 +148,29 @@ const styles = StyleSheet.create({
   favoriteButton: {
     padding: 8,
     marginLeft: 8,
+  },
+  noteContainer: {
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderTopWidth: 1,
+    borderTopColor: '#F0F0F0',
+  },
+  noteInput: {
+    fontSize: 14,
+    color: '#3C3C43',
+    minHeight: 28,
+    textAlignVertical: 'center',
+  },
+  noteDisplayContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    minHeight: 28,
+  },
+  noteDisplay: {
+    fontSize: 14,
+    color: '#8E8E93',
+    fontStyle: 'italic',
+    marginLeft: 8,
+    flex: 1,
   },
 });
