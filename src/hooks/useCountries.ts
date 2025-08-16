@@ -35,22 +35,24 @@ const fetchCountries = async (): Promise<Country[]> => {
   const data = await response.json();
 
   // Transform API data to match our Country interface
-  return data.map((country: any) => ({
-    cca3: country.cca3,
-    name: {
-      common: country.name.common,
-      official: country.name.official,
-    },
-    capital: country.capital || [],
-    region: country.region,
-    population: country.population,
-    flags: {
-      png: country.flags.png,
-      svg: country.flags.svg,
-    },
-    languages: country.languages || {},
-    currencies: country.currencies || {},
-  }));
+  return data
+    .filter((country: any) => country && country.cca3 && country.name?.common)
+    .map((country: any) => ({
+      cca3: country.cca3,
+      name: {
+        common: country.name.common,
+        official: country.name.official,
+      },
+      capital: country.capital || [],
+      region: country.region,
+      population: country.population,
+      flags: {
+        png: country.flags.png,
+        svg: country.flags.svg,
+      },
+      languages: country.languages || {},
+      currencies: country.currencies || {},
+    }));
 };
 
 export const useCountries = (): UseCountriesReturn => {

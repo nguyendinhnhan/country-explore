@@ -183,6 +183,7 @@ export function FavoritesProvider({ children }: FavoritesProviderProps) {
   // Check if country is favorite
   const isFavorite = useCallback(
     (country: Country) => {
+      if (!country?.cca3) return false;
       return state.favorites.some((f) => f.cca3 === country.cca3);
     },
     [state.favorites]
@@ -191,6 +192,7 @@ export function FavoritesProvider({ children }: FavoritesProviderProps) {
   // Get favorite note
   const getFavoriteNote = useCallback(
     (country: Country) => {
+      if (!country?.cca3) return '';
       const favorite = state.favorites.find((f) => f.cca3 === country.cca3);
       return favorite?.note || '';
     },

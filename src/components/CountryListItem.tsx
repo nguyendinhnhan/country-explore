@@ -20,7 +20,6 @@ interface CountryListItemProps {
   onNoteChange?: (note: string) => void;
 }
 
-// In React 19, memo is less critical for simple components, but still useful for FlatList items
 function CountryListItem({
   country,
   onPress,
@@ -52,6 +51,10 @@ function CountryListItem({
   const handleFavoritePress = useCallback(() => {
     onFavoritePress?.();
   }, [onFavoritePress]);
+
+  if (!country) {
+    return null;
+  }
 
   return (
     <View style={styles.wrapper}>
@@ -128,7 +131,6 @@ export default CountryListItem;
 
 const styles = StyleSheet.create({
   wrapper: {
-    marginHorizontal: 16,
     marginVertical: 4,
     backgroundColor: '#FFFFFF',
     borderRadius: 12,

@@ -109,7 +109,7 @@ export default function CountriesScreen() {
       />
 
       <FlatList
-        data={displayedCountries}
+        data={displayedCountries.filter(Boolean)}
         renderItem={renderCountryItem}
         keyExtractor={keyExtractor}
         contentContainerStyle={styles.listContainer}
