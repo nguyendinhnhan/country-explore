@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1755357060219" clover="3.2.0">
-  <project timestamp="1755357060219" name="All files">
-    <metrics statements="315" coveredstatements="153" conditionals="145" coveredconditionals="51" methods="85" coveredmethods="41" elements="545" coveredelements="245" complexity="0" loc="315" ncloc="315" packages="5" files="13" classes="13"/>
+<coverage generated="1755357867511" clover="3.2.0">
+  <project timestamp="1755357867511" name="All files">
+    <metrics statements="315" coveredstatements="154" conditionals="147" coveredconditionals="54" methods="85" coveredmethods="41" elements="547" coveredelements="249" complexity="0" loc="315" ncloc="315" packages="5" files="13" classes="13"/>
     <package name="components">
       <metrics statements="52" coveredstatements="19" conditionals="50" coveredconditionals="21" methods="19" coveredmethods="8"/>
       <file name="CountryDetailModal.tsx" path="/Users/nhannguyen/Documents/rntesting/exercise_psp/CountryExplorer/src/components/CountryDetailModal.tsx">
@@ -149,9 +149,9 @@
       </file>
     </package>
     <package name="hooks">
-      <metrics statements="97" coveredstatements="52" conditionals="21" coveredconditionals="14" methods="23" coveredmethods="10"/>
+      <metrics statements="97" coveredstatements="53" conditionals="23" coveredconditionals="17" methods="23" coveredmethods="10"/>
       <file name="useCountries.ts" path="/Users/nhannguyen/Documents/rntesting/exercise_psp/CountryExplorer/src/hooks/useCountries.ts">
-        <metrics statements="45" coveredstatements="44" conditionals="17" coveredconditionals="14" methods="6" coveredmethods="6"/>
+        <metrics statements="45" coveredstatements="45" conditionals="19" coveredconditionals="17" methods="6" coveredmethods="6"/>
         <line num="6" count="1" type="stmt"/>
         <line num="7" count="1" type="stmt"/>
         <line num="24" count="1" type="stmt"/>
@@ -172,14 +172,14 @@
         <line num="46" count="11" type="stmt"/>
         <line num="48" count="1" type="stmt"/>
         <line num="51" count="12" type="stmt"/>
-        <line num="58" count="11" type="cond" truecount="1" falsecount="1"/>
+        <line num="58" count="11" type="cond" truecount="4" falsecount="0"/>
         <line num="59" count="9" type="stmt"/>
         <line num="60" count="9" type="cond" truecount="2" falsecount="0"/>
         <line num="62" count="9" type="cond" truecount="2" falsecount="0"/>
         <line num="63" count="9" type="stmt"/>
-        <line num="65" count="0" type="stmt"/>
-        <line num="68" count="3" type="stmt"/>
-        <line num="69" count="3" type="stmt"/>
+        <line num="65" count="2" type="stmt"/>
+        <line num="68" count="1" type="stmt"/>
+        <line num="69" count="1" type="stmt"/>
         <line num="71" count="12" type="stmt"/>
         <line num="72" count="12" type="stmt"/>
         <line num="78" count="28" type="stmt"/>

@@ -55,7 +55,7 @@ export const useCountries = (): UseCountriesReturn => {
           region: selectedRegion === 'All' ? '' : selectedRegion,
         });
 
-        if (response.data) {
+        if (response && response.data) {
           setCountries((prevCountries) =>
             append ? [...prevCountries, ...response.data] : response.data
           );
