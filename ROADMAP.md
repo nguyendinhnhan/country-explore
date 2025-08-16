@@ -81,5 +81,5 @@ architecture, state management, and performance.
 | Layer           | Tools                       | Target                                              |
 | --------------- | --------------------------- | --------------------------------------------------- |
 | Unit Tests      | Jest, React Testing Library | `useCountries`, local storage helpers               |
-| Component Tests | React Testing Library       | `CountryCard`, `SearchBar`, etc.                    |
+| Component Tests | React Testing Library       | `CountryListItem`, `SearchBar`, etc.                |
 | Manual Testing  | Expo Go                     | Check navigation, error handling, persistence, etc. |

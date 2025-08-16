@@ -104,11 +104,13 @@ function CountryListItem({
               autoFocus
               returnKeyType="done"
               maxLength={100}
+              testID="note-input"
             />
           ) : (
             <TouchableOpacity
               style={styles.noteDisplayContainer}
               onPress={handleNotePress}
+              testID="note-display"
             >
               <Ionicons name="create-outline" size={16} color="#8E8E93" />
               <Text style={styles.noteDisplay}>

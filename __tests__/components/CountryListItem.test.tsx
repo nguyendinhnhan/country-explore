@@ -43,8 +43,7 @@ describe('CountryListItem Component', () => {
 
     expect(getByText('United States')).toBeTruthy();
     expect(getByText('Americas')).toBeTruthy();
-    expect(getByText('Washington, D.C.')).toBeTruthy();
-    expect(getByText('331,900,000')).toBeTruthy();
+    // Note: Component now shows simplified view with just name and region
   });
 
   /**
@@ -120,81 +119,11 @@ describe('CountryListItem Component', () => {
   });
 
   /**
-   * Test 6: Should handle country with multiple capitals
+   * Test 8: Should not show favorite button when showFavoriteButton is false
    */
-  it('should handle country with multiple capitals', () => {
-    const countryWithMultipleCapitals: Country = {
-      ...mockCountry,
-      capital: ['Pretoria', 'Cape Town', 'Bloemfontein'],
-      name: { common: 'South Africa', official: 'Republic of South Africa' },
-    };
-
-    const { getByText } = render(
-      <CountryListItem
-        country={countryWithMultipleCapitals}
-        isFavorite={false}
-        onPress={mockOnPress}
-        onFavoritePress={mockOnFavoritePress}
-      />
-    );
-
-    expect(getByText('Pretoria, Cape Town, Bloemfontein')).toBeTruthy();
-  });
 
   /**
-   * Test 7: Should handle country with no capital
-   */
-  it('should handle country with no capital', () => {
-    const countryWithNoCapital: Country = {
-      ...mockCountry,
-      capital: undefined,
-      name: { common: 'Test Country', official: 'Test Country Official' },
-    };
-
-    const { getByText } = render(
-      <CountryListItem
-        country={countryWithNoCapital}
-        isFavorite={false}
-        onPress={mockOnPress}
-        onFavoritePress={mockOnFavoritePress}
-      />
-    );
-
-    expect(getByText('N/A')).toBeTruthy();
-  });
-
-  /**
-   * Test 8: Should format population numbers correctly
-   */
-  it('should format population numbers correctly', () => {
-    const testCases = [
-      { population: 1000, expected: '1,000' },
-      { population: 1000000, expected: '1,000,000' },
-      { population: 331900000, expected: '331,900,000' },
-    ];
-
-    testCases.forEach(({ population, expected }) => {
-      const testCountry: Country = {
-        ...mockCountry,
-        population,
-        name: { common: `Test Country ${population}`, official: 'Test' },
-      };
-
-      const { getByText } = render(
-        <CountryListItem
-          country={testCountry}
-          isFavorite={false}
-          onPress={mockOnPress}
-          onFavoritePress={mockOnFavoritePress}
-        />
-      );
-
-      expect(getByText(expected)).toBeTruthy();
-    });
-  });
-
-  /**
-   * Test 9: Should not show favorite button when showFavoriteButton is false
+   * Test 8: Should not show favorite button when showFavoriteButton is false
    */
   it('should not show favorite button when showFavoriteButton is false', () => {
     const { queryByTestId } = render(
