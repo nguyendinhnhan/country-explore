@@ -41,11 +41,6 @@ export default function CountryDetailModal({
     return population.toLocaleString();
   };
 
-  const formatArea = (area?: number) => {
-    if (!area) return 'N/A';
-    return `${area.toLocaleString()} km²`;
-  };
-
   const getCapital = () => {
     if (!country.capital || country.capital.length === 0) {
       return 'N/A';
@@ -63,12 +58,6 @@ export default function CountryDetailModal({
     return Object.values(country.currencies)
       .map(currency => `${currency.name} (${currency.symbol})`)
       .join(', ');
-  };
-
-  const getTimezones = () => {
-    if (!country.timezones || country.timezones.length === 0) return 'N/A';
-    return country.timezones.slice(0, 3).join(', ') + 
-           (country.timezones.length > 3 ? '...' : '');
   };
 
   return (
@@ -122,7 +111,6 @@ export default function CountryDetailModal({
               icon="location-outline"
               title="Region"
               value={country.region}
-              subtitle={country.subregion}
             />
             <InfoCard
               icon="business-outline"
@@ -135,11 +123,6 @@ export default function CountryDetailModal({
               value={formatPopulation(country.population)}
             />
             <InfoCard
-              icon="resize-outline"
-              title="Area"
-              value={formatArea(country.area)}
-            />
-            <InfoCard
               icon="chatbubble-outline"
               title="Languages"
               value={getLanguages()}
@@ -149,18 +132,6 @@ export default function CountryDetailModal({
               title="Currency"
               value={getCurrencies()}
             />
-            <InfoCard
-              icon="time-outline"
-              title="Timezones"
-              value={getTimezones()}
-            />
-            {country.borders && country.borders.length > 0 && (
-              <InfoCard
-                icon="git-network-outline"
-                title="Borders"
-                value={`${country.borders.length} countries`}
-              />
-            )}
           </View>
         </ScrollView>
       </SafeAreaView>

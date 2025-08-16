@@ -1,176 +1,170 @@
-import React, { useState } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useFocusEffect } from '@react-navigation/native';
+import React, { useCallback, useMemo, useState } from 'react';
 import {
+  Alert,
   FlatList,
-  SafeAreaView,
+  ListRenderItem,
+  RefreshControl,
   StyleSheet,
+  View,
 } from 'react-native';
+
 import CountryDetailModal from '../src/components/CountryDetailModal';
 import CountryListItem from '../src/components/CountryListItem';
 import EmptyState from '../src/components/EmptyState';
 import ErrorState from '../src/components/ErrorState';
 import LoadingState from '../src/components/LoadingState';
 import SearchBar from '../src/components/SearchBar';
-import { Country, Region } from '../src/types/Country';
+import { useCountries } from '../src/hooks/useCountries';
+import { Country, FavoriteCountry } from '../src/types/Country';
 
-// Mock data for UI testing - replace with real API later
-const mockCountries: Country[] = [
-  {
-    cca3: 'USA',
-    name: { common: 'United States', official: 'United States of America' },
-    capital: ['Washington, D.C.'],
-    region: 'Americas',
-    subregion: 'North America',
-    population: 331900000,
-    area: 9833517,
-    flags: { png: 'https://flagcdn.com/w320/us.png', svg: 'https://flagcdn.com/us.svg' },
-    languages: { eng: 'English' },
-    currencies: { USD: { name: 'United States dollar', symbol: '$' } },
-    timezones: ['UTC-12:00', 'UTC-11:00', 'UTC-10:00', 'UTC-09:00', 'UTC-08:00', 'UTC-07:00'],
-    borders: ['CAN', 'MEX'],
-  },
-  {
-    cca3: 'FRA',
-    name: { common: 'France', official: 'French Republic' },
-    capital: ['Paris'],
-    region: 'Europe',
-    subregion: 'Western Europe',
-    population: 67390000,
-    area: 551695,
-    flags: { png: 'https://flagcdn.com/w320/fr.png', svg: 'https://flagcdn.com/fr.svg' },
-    languages: { fra: 'French' },
-    currencies: { EUR: { name: 'Euro', symbol: '€' } },
-    timezones: ['UTC+01:00'],
-    borders: ['AND', 'BEL', 'DEU', 'ITA', 'LUX', 'MCO', 'ESP', 'CHE'],
-  },
-  {
-    cca3: 'JPN',
-    name: { common: 'Japan', official: 'Japan' },
-    capital: ['Tokyo'],
-    region: 'Asia',
-    subregion: 'Eastern Asia',
-    population: 125800000,
-    area: 377930,
-    flags: { png: 'https://flagcdn.com/w320/jp.png', svg: 'https://flagcdn.com/jp.svg' },
-    languages: { jpn: 'Japanese' },
-    currencies: { JPY: { name: 'Japanese yen', symbol: '¥' } },
-    timezones: ['UTC+09:00'],
-  },
-  {
-    cca3: 'BRA',
-    name: { common: 'Brazil', official: 'Federative Republic of Brazil' },
-    capital: ['Brasília'],
-    region: 'Americas',
-    subregion: 'South America',
-    population: 215300000,
-    area: 8515767,
-    flags: { png: 'https://flagcdn.com/w320/br.png', svg: 'https://flagcdn.com/br.svg' },
-    languages: { por: 'Portuguese' },
-    currencies: { BRL: { name: 'Brazilian real', symbol: 'R$' } },
-    timezones: ['UTC-05:00', 'UTC-04:00', 'UTC-03:00', 'UTC-02:00'],
-    borders: ['ARG', 'BOL', 'COL', 'FRG', 'GUY', 'PRY', 'PER', 'SUR', 'URY', 'VEN'],
-  },
-  {
-    cca3: 'AUS',
-    name: { common: 'Australia', official: 'Commonwealth of Australia' },
-    capital: ['Canberra'],
-    region: 'Oceania',
-    subregion: 'Australia and New Zealand',
-    population: 25690000,
-    area: 7692024,
-    flags: { png: 'https://flagcdn.com/w320/au.png', svg: 'https://flagcdn.com/au.svg' },
-    languages: { eng: 'English' },
-    currencies: { AUD: { name: 'Australian dollar', symbol: '$' } },
-    timezones: ['UTC+05:00', 'UTC+06:30', 'UTC+07:00', 'UTC+08:00', 'UTC+09:30', 'UTC+10:00'],
-  },
-];
+const FAVORITES_KEY = 'country_favorites';
 
-export default function Index() {
-  const [searchQuery, setSearchQuery] = useState('');
-  const [selectedRegion, setSelectedRegion] = useState<Region>('All');
-  const [favorites, setFavorites] = useState<Set<string>>(new Set());
-  const [notes, setNotes] = useState<Map<string, string>>(new Map());
-  const [loading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+export default function CountriesScreen() {
+  const {
+    displayedCountries,
+    loading,
+    error,
+    searchQuery,
+    setSearchQuery,
+    selectedRegion,
+    setSelectedRegion,
+    hasMore,
+    loadMore,
+    retry,
+    refreshing,
+    refresh,
+  } = useCountries();
+
   const [selectedCountry, setSelectedCountry] = useState<Country | null>(null);
-  const [modalVisible, setModalVisible] = useState(false);
+  const [favorites, setFavorites] = useState<FavoriteCountry[]>([]);
 
-  // Filter countries based on search and region
-  const filteredCountries = mockCountries.filter((country) => {
-    const matchesSearch = country.name.common
-      .toLowerCase()
-      .includes(searchQuery.toLowerCase());
-    const matchesRegion = selectedRegion === 'All' || country.region === selectedRegion;
-    return matchesSearch && matchesRegion;
-  });
-
-  const handleCountryPress = (country: Country) => {
-    setSelectedCountry(country);
-    setModalVisible(true);
-  };
-
-  const handleFavoritePress = (countryCode: string) => {
-    setFavorites((prev) => {
-      const newFavorites = new Set(prev);
-      if (newFavorites.has(countryCode)) {
-        newFavorites.delete(countryCode);
-        setNotes((prevNotes) => {
-          const newNotes = new Map(prevNotes);
-          newNotes.delete(countryCode);
-          return newNotes;
-        });
-      } else {
-        newFavorites.add(countryCode);
+  const loadFavorites = useCallback(async () => {
+    try {
+      const stored = await AsyncStorage.getItem(FAVORITES_KEY);
+      if (stored) {
+        setFavorites(JSON.parse(stored));
       }
-      return newFavorites;
-    });
-  };
+    } catch (error) {
+      console.error('Error loading favorites:', error);
+    }
+  }, []);
 
-  const handleNoteChange = (countryCode: string, note: string) => {
-    setNotes((prev) => {
-      const newNotes = new Map(prev);
-      if (note.trim()) {
-        newNotes.set(countryCode, note);
-      } else {
-        newNotes.delete(countryCode);
-      }
-      return newNotes;
-    });
-  };
+  const saveFavorites = useCallback(async (newFavorites: FavoriteCountry[]) => {
+    try {
+      await AsyncStorage.setItem(FAVORITES_KEY, JSON.stringify(newFavorites));
+      setFavorites(newFavorites);
+    } catch (error) {
+      console.error('Error saving favorites:', error);
+      Alert.alert('Error', 'Failed to save favorites');
+    }
+  }, []);
 
-  const handleModalClose = () => {
-    setModalVisible(false);
-    setSelectedCountry(null);
-  };
+  const toggleFavorite = useCallback((country: Country) => {
+    const existingIndex = favorites.findIndex(fav => fav.cca3 === country.cca3);
+    
+    if (existingIndex >= 0) {
+      const newFavorites = favorites.filter(fav => fav.cca3 !== country.cca3);
+      saveFavorites(newFavorites);
+    } else {
+      const newFavorite: FavoriteCountry = {
+        ...country,
+        dateAdded: new Date().toISOString(),
+        note: '',
+      };
+      const newFavorites = [...favorites, newFavorite];
+      saveFavorites(newFavorites);
+    }
+  }, [favorites, saveFavorites]);
 
-  const renderCountryItem = ({ item }: { item: Country }) => (
-    <CountryListItem
-      country={item}
-      onPress={() => handleCountryPress(item)}
-      onFavoritePress={() => handleFavoritePress(item.cca3)}
-      isFavorite={favorites.has(item.cca3)}
-      note={notes.get(item.cca3) || ''}
-      onNoteChange={(note) => handleNoteChange(item.cca3, note)}
-    />
+  const updateFavoriteNote = useCallback((countryCode: string, note: string) => {
+    const newFavorites = favorites.map(fav =>
+      fav.cca3 === countryCode ? { ...fav, note } : fav
+    );
+    saveFavorites(newFavorites);
+  }, [favorites, saveFavorites]);
+
+  const isFavorite = useCallback((country: Country) => {
+    return favorites.some(fav => fav.cca3 === country.cca3);
+  }, [favorites]);
+
+  // Get favorite note
+  const getFavoriteNote = useCallback((country: Country) => {
+    const favorite = favorites.find(fav => fav.cca3 === country.cca3);
+    return favorite?.note || '';
+  }, [favorites]);
+
+  // Load favorites when screen focuses
+  useFocusEffect(
+    useCallback(() => {
+      loadFavorites();
+    }, [loadFavorites])
   );
 
-  if (loading) {
+  // Render country item
+  const renderCountryItem: ListRenderItem<Country> = useCallback(({ item }) => (
+    <CountryListItem
+      country={item}
+      onPress={() => setSelectedCountry(item)}
+      onFavoritePress={() => toggleFavorite(item)}
+      onNoteChange={(note) => updateFavoriteNote(item.cca3, note)}
+      isFavorite={isFavorite(item)}
+      note={getFavoriteNote(item)}
+      showFavoriteButton={true}
+    />
+  ), [toggleFavorite, updateFavoriteNote, isFavorite, getFavoriteNote]);
+
+  // Handle load more
+  const handleLoadMore = useCallback(() => {
+    if (hasMore && !loading) {
+      loadMore();
+    }
+  }, [hasMore, loading, loadMore]);
+
+  // Memoized render footer
+  const renderFooter = useMemo(() => {
+    if (!loading || displayedCountries.length === 0) return null;
+    return <LoadingState message="Loading more countries..." />;
+  }, [loading, displayedCountries.length]);
+
+  // Handle refresh
+  const handleRefresh = useCallback(() => {
+    refresh();
+  }, [refresh]);
+
+  // Show loading state for initial load
+  if (loading && displayedCountries.length === 0) {
     return <LoadingState message="Loading countries..." />;
   }
 
-  if (error) {
+  // Show error state
+  if (error && displayedCountries.length === 0) {
     return (
       <ErrorState
         message={error}
-        onRetry={() => {
-          setError(null);
-          // Add retry logic here
-        }}
+        onRetry={retry}
+      />
+    );
+  }
+
+  // Show empty state when no results
+  if (!loading && displayedCountries.length === 0) {
+    const emptyMessage = searchQuery || selectedRegion !== 'All'
+      ? 'No countries found matching your search criteria'
+      : 'No countries available';
+    
+    return (
+      <EmptyState 
+        title="No Countries"
+        message={emptyMessage}
+        iconName="globe-outline"
       />
     );
   }
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <SearchBar
         searchQuery={searchQuery}
         onSearchChange={setSearchQuery}
@@ -178,45 +172,52 @@ export default function Index() {
         onRegionChange={setSelectedRegion}
       />
       
-      {filteredCountries.length === 0 ? (
-        <EmptyState
-          title="No countries found"
-          message={
-            searchQuery
-              ? `No countries match "${searchQuery}"`
-              : `No countries found in ${selectedRegion}`
-          }
-          iconName="search-outline"
-        />
-      ) : (
-        <FlatList
-          data={filteredCountries}
-          keyExtractor={(item) => item.cca3}
-          renderItem={renderCountryItem}
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={styles.listContent}
+      <FlatList
+        data={displayedCountries}
+        renderItem={renderCountryItem}
+        keyExtractor={(item) => item.cca3}
+        contentContainerStyle={styles.listContainer}
+        showsVerticalScrollIndicator={false}
+        onEndReached={handleLoadMore}
+        onEndReachedThreshold={0.5}
+        ListFooterComponent={renderFooter}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={handleRefresh}
+            tintColor="#007AFF"
+          />
+        }
+        removeClippedSubviews={true}
+        maxToRenderPerBatch={10}
+        windowSize={10}
+        getItemLayout={(data, index) => ({
+          length: 120, // Approximate item height
+          offset: 120 * index,
+          index,
+        })}
+      />
+
+      {selectedCountry && (
+        <CountryDetailModal
+          country={selectedCountry}
+          visible={true}
+          onClose={() => setSelectedCountry(null)}
+          onFavoritePress={() => toggleFavorite(selectedCountry)}
+          isFavorite={isFavorite(selectedCountry)}
         />
       )}
-
-      {/* Country Detail Modal */}
-      <CountryDetailModal
-        country={selectedCountry}
-        visible={modalVisible}
-        onClose={handleModalClose}
-        onFavoritePress={() => selectedCountry && handleFavoritePress(selectedCountry.cca3)}
-        isFavorite={selectedCountry ? favorites.has(selectedCountry.cca3) : false}
-      />
-    </SafeAreaView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F8F9FA',
+    backgroundColor: '#f5f5f5',
   },
-  listContent: {
+  listContainer: {
+    padding: 16,
     paddingTop: 8,
-    paddingBottom: 20,
   },
 });

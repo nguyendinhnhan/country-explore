@@ -6,7 +6,6 @@ export interface Country {
   };
   capital?: string[];
   region: string;
-  subregion?: string;
   population: number;
   flags: {
     png: string;
@@ -14,9 +13,6 @@ export interface Country {
   };
   languages?: { [key: string]: string };
   currencies?: { [key: string]: { name: string; symbol: string } };
-  area?: number;
-  timezones?: string[];
-  borders?: string[];
 }
 
 export interface FavoriteCountry extends Country {
