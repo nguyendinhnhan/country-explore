@@ -1,51 +1,80 @@
-# Welcome to your Expo app 👋
+# 🌍 Country Explorer
 
-This is an [Expo](https://expo.dev) project created with
-[`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+A React Native application for exploring world countries with favorites, notes, and comprehensive search functionality.
 
-## Get started
+## ✅ Completed Features
 
-1. Install dependencies
+### Core Functionality
+
+- **Browse Countries** - Paginated list from REST Countries API
+- **Search & Filter** - Real-time search with region filtering
+- **Country Details** - Comprehensive modal with country information
+- **Favorites & Notes** - Star countries and add personal notes
+- **Error Handling** - Robust error states with retry functionality
+
+### Technical Excellence
+
+- **TypeScript** - Full type safety throughout the application
+- **Custom Hooks** - Reusable `useCountries`, `useFavorites`, `useFetch` hooks
+- **State Management** - React Context for global favorites state
+- **Performance Optimized** - Lazy loading, memoization, and FlatList optimization
+- **Lint & Format** - ESLint + Prettier configuration
+- **Local Storage** - AsyncStorage persistence for favorites
+
+## 🚀 Performance Optimizations
+
+- **Lazy Loading** - Detail modal loads only when needed
+- **Component Memoization** - Prevents unnecessary re-renders
+- **Optimized FlatList** - Efficient scrolling and rendering
+- **Debounced Search** - Smooth search experience
+- **Stable Callbacks** - Reduced re-render cascades
+
+See [docs/PERFORMANCE.md](docs/PERFORMANCE.md) for detailed performance documentation.
+
+## 🏗 Architecture
+
+```
+src/
+├── components/     # Reusable UI components
+├── contexts/       # React Context providers
+├── hooks/          # Custom hooks for business logic
+├── services/       # API and storage services
+└── types/          # TypeScript type definitions
+```
+
+## 🛠 Getting Started
+
+1. **Install dependencies**
 
    ```bash
    npm install
    ```
 
-2. Start the app
+2. **Start the development server**
 
    ```bash
    npx expo start
    ```
 
-In the output, you'll find options to open the app in a
+3. **Run linting and formatting**
+   ```bash
+   npm run lint
+   npm run format
+   ```
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+## 📱 Available Scripts
 
-You can start developing by editing the files inside the **app** directory. This project uses
-[file-based routing](https://docs.expo.dev/router/introduction).
+- `npm start` - Start Expo development server
+- `npm run lint` - Run ESLint
+- `npm run format` - Format code with Prettier
+- `npm run android` - Run on Android device/emulator
+- `npm run ios` - Run on iOS device/simulator
 
-## Get a fresh project
+## 📚 Documentation
 
-When you're ready, run:
-
-```bash
-npm run reset-project
-```
-
-This command will move the starter code to the **app-example** directory and create a blank **app**
-directory where you can start developing.
-
-## Learn more
-
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with
-  our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step
-  tutorial where you'll create a project that runs on Android, iOS, and the web.
+- [Planning Documents](docs/) - Architecture and development planning
+- [Performance Guide](docs/PERFORMANCE.md) - Performance optimization details
+- [Lint Configuration](LINT_CONFIG.md) - ESLint and Prettier setup
 
 ## Join the community
 

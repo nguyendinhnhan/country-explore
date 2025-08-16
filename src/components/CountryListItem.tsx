@@ -1,5 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
-import React, { useState, useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import {
   Image,
   StyleSheet,
@@ -53,9 +53,24 @@ function CountryListItem({
     onFavoritePress?.();
   }, [onFavoritePress]);
 
+  const formatPopulation = (population: number): string => {
+    return population.toLocaleString();
+  };
+
+  const getCapitalString = (capital?: string[]): string => {
+    if (!capital || capital.length === 0) {
+      return 'N/A';
+    }
+    return capital.join(', ');
+  };
+
   return (
     <View style={styles.wrapper}>
-      <TouchableOpacity style={styles.container} onPress={onPress}>
+      <TouchableOpacity
+        style={styles.container}
+        onPress={onPress}
+        testID="country-item"
+      >
         <Image
           source={{ uri: country.flags.png }}
           style={styles.flag}
@@ -67,6 +82,12 @@ function CountryListItem({
             {country.name.common}
           </Text>
           <Text style={styles.region}>{country.region}</Text>
+          <Text style={styles.capital}>
+            {getCapitalString(country.capital)}
+          </Text>
+          <Text style={styles.population}>
+            {formatPopulation(country.population)}
+          </Text>
         </View>
 
         {showFavoriteButton && onFavoritePress && (
@@ -74,11 +95,13 @@ function CountryListItem({
             onPress={handleFavoritePress}
             style={styles.favoriteButton}
             hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+            testID="favorite-button"
           >
             <Ionicons
-              name={isFavorite ? 'star' : 'star-outline'}
+              name={isFavorite ? 'heart' : 'heart-outline'}
               size={20}
               color={isFavorite ? '#FFD700' : '#8E8E93'}
+              testID="favorite-icon"
             />
           </TouchableOpacity>
         )}
@@ -156,6 +179,16 @@ const styles = StyleSheet.create({
   region: {
     fontSize: 15,
     color: '#8E8E93',
+    marginBottom: 2,
+  },
+  capital: {
+    fontSize: 14,
+    color: '#666',
+    marginBottom: 2,
+  },
+  population: {
+    fontSize: 14,
+    color: '#666',
   },
   favoriteButton: {
     padding: 8,

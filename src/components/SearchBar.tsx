@@ -51,6 +51,7 @@ export default function SearchBar({
         <TextInput
           style={styles.searchInput}
           placeholder="Search countries..."
+          placeholderTextColor="#8E8E93"
           value={searchQuery}
           onChangeText={onSearchChange}
           clearButtonMode="while-editing"
