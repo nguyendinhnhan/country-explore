@@ -33,7 +33,7 @@ export default function RootLayout() {
           title: "Favorites",
           headerTitle: "My Favorites",
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="heart" size={size} color={color} />
+            <Ionicons name="star" size={size} color={color} />
           ),
         }}
       />
