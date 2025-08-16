@@ -55,6 +55,9 @@ export default function SearchBar({
           value={searchQuery}
           onChangeText={onSearchChange}
           clearButtonMode="while-editing"
+          returnKeyType="search"
+          autoCorrect={false}
+          autoCapitalize="none"
         />
       </View>
 

@@ -1,5 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useState, useEffect } from 'react';
 import {
   Image,
   StyleSheet,
@@ -30,10 +30,20 @@ function CountryListItem({
   onNoteChange,
 }: CountryListItemProps) {
   const [isEditingNote, setIsEditingNote] = useState(false);
+  const [localNote, setLocalNote] = useState(note);
+
+  // Update local note when prop changes (e.g., when switching between countries)
+  useEffect(() => {
+    setLocalNote(note);
+  }, [note]);
 
   const handleNoteSubmit = useCallback(() => {
     setIsEditingNote(false);
-  }, []);
+    // Only update the context when user finishes editing
+    if (localNote !== note) {
+      onNoteChange?.(localNote);
+    }
+  }, [localNote, note, onNoteChange]);
 
   const handleNotePress = useCallback(() => {
     if (isFavorite) {
@@ -41,12 +51,10 @@ function CountryListItem({
     }
   }, [isFavorite]);
 
-  const handleNoteChange = useCallback(
-    (text: string) => {
-      onNoteChange?.(text);
-    },
-    [onNoteChange]
-  );
+  const handleLocalNoteChange = useCallback((text: string) => {
+    // Update local state immediately for responsive UI
+    setLocalNote(text);
+  }, []);
 
   const handleFavoritePress = useCallback(() => {
     onFavoritePress?.();
@@ -100,11 +108,13 @@ function CountryListItem({
             <TextInput
               style={styles.noteInput}
               placeholder="Add a note about this country..."
-              value={note}
-              onChangeText={handleNoteChange}
+              value={localNote}
+              onChangeText={handleLocalNoteChange}
               onSubmitEditing={handleNoteSubmit}
               onBlur={handleNoteSubmit}
               autoFocus
+              autoCorrect={false}
+              autoCapitalize="none"
               returnKeyType="done"
               maxLength={100}
               testID="note-input"
@@ -117,7 +127,7 @@ function CountryListItem({
             >
               <Ionicons name="create-outline" size={16} color="#8E8E93" />
               <Text style={styles.noteDisplay}>
-                {note || 'Tap to add a note...'}
+                {localNote || 'Tap to add a note...'}
               </Text>
             </TouchableOpacity>
           )}
@@ -127,7 +137,7 @@ function CountryListItem({
   );
 }
 
-export default CountryListItem;
+export default React.memo(CountryListItem);
 
 const styles = StyleSheet.create({
   wrapper: {

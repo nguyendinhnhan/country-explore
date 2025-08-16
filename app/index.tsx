@@ -74,18 +74,18 @@ export default function CountriesScreen() {
     return null;
   };
 
-  // Show loading state for initial load
-  if (isLoading && countries.length === 0) {
-    return <LoadingState message="Loading countries..." />;
-  }
+  const renderEmpty = () => {
+    // Show loading state for initial load
+    if (isLoading) {
+      return <LoadingState message="Loading countries..." />;
+    }
 
-  // Show error state
-  if (error && countries.length === 0) {
-    return <ErrorState message={error} onRetry={refresh} />;
-  }
+    // Show error state
+    if (error) {
+      return <ErrorState message={error} onRetry={refresh} />;
+    }
 
-  // Show empty state when no results
-  if (!isLoading && countries.length === 0) {
+    // Show empty state when no results
     const emptyMessage =
       searchQuery || selectedRegion !== 'All'
         ? 'No countries found matching your search criteria'
@@ -98,7 +98,7 @@ export default function CountriesScreen() {
         iconName="globe-outline"
       />
     );
-  }
+  };
 
   return (
     <View style={styles.container}>
@@ -113,11 +113,14 @@ export default function CountriesScreen() {
         data={countries.filter(Boolean)}
         renderItem={renderCountryItem}
         keyExtractor={keyExtractor}
-        contentContainerStyle={styles.listContainer}
+        contentContainerStyle={
+          countries.length === 0 ? styles.emptyContainer : styles.listContainer
+        }
         showsVerticalScrollIndicator={false}
         onEndReached={handleLoadMore}
         onEndReachedThreshold={0.5}
         ListFooterComponent={renderFooter}
+        ListEmptyComponent={renderEmpty}
         refreshControl={
           <RefreshControl
             refreshing={isRefreshing}
@@ -148,5 +151,10 @@ const styles = StyleSheet.create({
   listContainer: {
     padding: 16,
     paddingTop: 8,
+  },
+  emptyContainer: {
+    flex: 1,
+    padding: 16,
+    marginBottom: 32,
   },
 });

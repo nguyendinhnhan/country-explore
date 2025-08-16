@@ -168,6 +168,12 @@ describe('CountryListItem Component', () => {
     const noteInput = getByDisplayValue(testNote);
     fireEvent.changeText(noteInput, 'Updated note');
 
+    // onNoteChange should only be called when editing finishes (onBlur/onSubmitEditing)
+    expect(mockOnNoteChange).not.toHaveBeenCalled();
+
+    // Simulate finishing editing (blur or submit)
+    fireEvent(noteInput, 'blur');
+
     expect(mockOnNoteChange).toHaveBeenCalledWith('Updated note');
   });
 });
