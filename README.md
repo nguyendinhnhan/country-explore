@@ -19,7 +19,6 @@ A React Native app built for the 4-hour test task. Implements all core requireme
 
 ### Stretch Goals
 - ✅ **Local Storage** - Favorites/notes persist across reloads
-- ✅ **E2E Tests** - Integration tests for key user flows
 
 ## � Getting Started
 
@@ -177,6 +176,7 @@ Given the **4-hour development constraint**, several strategic decisions were ma
 ## 🔮 Future Enhancements
 
 ### Short-term (Next Sprint)
+- [ ] Covered full unit tests and core flows with e2e testing
 - [ ] Advanced search filters (population, area)
 - [ ] Rich text notes with formatting
 - [ ] Country comparison feature
