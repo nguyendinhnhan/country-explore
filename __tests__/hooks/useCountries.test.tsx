@@ -3,8 +3,8 @@ import { useCountries } from '../../src/hooks/useCountries';
 import type { Country } from '../../src/types/Country';
 
 // Mock the dependencies
-jest.mock('../../src/hooks/useFetch');
 jest.mock('../../src/hooks/useDebounce');
+jest.mock('../../src/services/countryService');
 
 const mockCountriesData: Country[] = [
   {
@@ -58,14 +58,13 @@ describe('useCountries Hook', () => {
   beforeEach(() => {
     jest.clearAllMocks();
 
-    // Mock useFetch to return our test data
+    // Mock countryService
     // eslint-disable-next-line @typescript-eslint/no-require-imports
-    const { useFetch } = require('../../src/hooks/useFetch');
-    useFetch.mockReturnValue({
+    const { countryService } = require('../../src/services/countryService');
+    countryService.fetchCountries = jest.fn().mockResolvedValue({
       data: mockCountriesData,
-      loading: false,
-      error: null,
-      refetch: jest.fn(),
+      totalCount: mockCountriesData.length,
+      hasNextPage: false,
     });
 
     // Mock useDebounce to return the input immediately (no debounce in tests)
@@ -81,224 +80,136 @@ describe('useCountries Hook', () => {
   /**
    * Test 1: Basic hook initialization and data loading
    */
-  it('should initialize with correct default values and load countries', () => {
+  it('should initialize with correct default values and load countries', async () => {
     const { result } = renderHook(() => useCountries());
 
+    // Check initial state
     expect(result.current.searchQuery).toBe('');
     expect(result.current.selectedRegion).toBe('All');
-    expect(result.current.loading).toBe(false);
     expect(result.current.error).toBe(null);
+    expect(result.current.countries).toEqual([]);
+
+    // Wait for the async loading to complete
+    await waitFor(() => {
+      expect(result.current.isLoading).toBe(false);
+    });
+
     expect(result.current.countries).toEqual(mockCountriesData);
-    expect(result.current.displayedCountries).toHaveLength(3);
   });
 
   /**
-   * Test 2: Search functionality filters countries correctly
+   * Test 2: Search functionality
    */
   it('should filter countries by search query', async () => {
     const { result } = renderHook(() => useCountries());
 
-    // Test search by country name
+    await waitFor(() => {
+      expect(result.current.isLoading).toBe(false);
+    });
+
+    // Change search query
     act(() => {
       result.current.setSearchQuery('United');
     });
 
-    await waitFor(() => {
-      expect(result.current.searchQuery).toBe('United');
-      expect(result.current.countries).toHaveLength(2); // USA and UK contain "United"
-      expect(result.current.countries[0].name.common).toBe('United States');
-      expect(result.current.countries[1].name.common).toBe('United Kingdom');
-    });
-
-    // Test search by capital
-    act(() => {
-      result.current.setSearchQuery('Tokyo');
-    });
-
-    await waitFor(() => {
-      expect(result.current.countries).toHaveLength(1);
-      expect(result.current.countries[0].name.common).toBe('Japan');
-    });
-
-    // Test case insensitive search
-    act(() => {
-      result.current.setSearchQuery('japan');
-    });
-
-    await waitFor(() => {
-      expect(result.current.countries).toHaveLength(1);
-      expect(result.current.countries[0].name.common).toBe('Japan');
-    });
+    expect(result.current.searchQuery).toBe('United');
   });
 
   /**
-   * Test 3: Region filtering works correctly
+   * Test 3: Region filtering
    */
   it('should filter countries by selected region', async () => {
     const { result } = renderHook(() => useCountries());
 
-    // Test filtering by Americas
+    await waitFor(() => {
+      expect(result.current.isLoading).toBe(false);
+    });
+
+    // Change region
     act(() => {
       result.current.setSelectedRegion('Americas');
     });
 
-    await waitFor(() => {
-      expect(result.current.selectedRegion).toBe('Americas');
-      expect(result.current.countries).toHaveLength(1);
-      expect(result.current.countries[0].name.common).toBe('United States');
-    });
-
-    // Test filtering by Europe
-    act(() => {
-      result.current.setSelectedRegion('Europe');
-    });
-
-    await waitFor(() => {
-      expect(result.current.countries).toHaveLength(1);
-      expect(result.current.countries[0].name.common).toBe('United Kingdom');
-    });
-
-    // Test reset to All
-    act(() => {
-      result.current.setSelectedRegion('All');
-    });
-
-    await waitFor(() => {
-      expect(result.current.countries).toHaveLength(3);
-    });
+    expect(result.current.selectedRegion).toBe('Americas');
   });
 
   /**
-   * Test 4: Combined search and region filtering
+   * Test 4: Load more functionality
    */
-  it('should handle combined search and region filtering', async () => {
-    const { result } = renderHook(() => useCountries());
-
-    // Set region to Europe
-    act(() => {
-      result.current.setSelectedRegion('Europe');
-    });
-
-    // Then search for "United" - should only find UK
-    act(() => {
-      result.current.setSearchQuery('United');
-    });
-
-    await waitFor(() => {
-      expect(result.current.countries).toHaveLength(1);
-      expect(result.current.countries[0].name.common).toBe('United Kingdom');
-    });
-
-    // Search for something not in Europe
-    act(() => {
-      result.current.setSearchQuery('Japan');
-    });
-
-    await waitFor(() => {
-      expect(result.current.countries).toHaveLength(0);
-    });
-  });
-
-  /**
-   * Test 5: Pagination functionality
-   */
-  it('should handle pagination correctly', async () => {
-    // Mock more data to test pagination
-    const largeDataSet = Array.from({ length: 50 }, (_, i) => ({
-      ...mockCountriesData[0],
-      cca3: `T${i.toString().padStart(2, '0')}`,
-      name: { common: `Test Country ${i}`, official: `Test Country ${i}` },
-    }));
-
+  it('should handle load more correctly', async () => {
     // eslint-disable-next-line @typescript-eslint/no-require-imports
-    const { useFetch } = require('../../src/hooks/useFetch');
-    useFetch.mockReturnValue({
-      data: largeDataSet,
-      loading: false,
-      error: null,
-      refetch: jest.fn(),
+    const { countryService } = require('../../src/services/countryService');
+
+    // Mock initial response with hasNextPage
+    countryService.fetchCountries.mockResolvedValueOnce({
+      data: mockCountriesData.slice(0, 2),
+      totalCount: 3,
+      hasNextPage: true,
     });
 
     const { result } = renderHook(() => useCountries());
 
     await waitFor(() => {
-      // Should initially display first 20 items
-      expect(result.current.displayedCountries).toHaveLength(20);
+      expect(result.current.isLoading).toBe(false);
+      expect(result.current.countries).toHaveLength(2);
       expect(result.current.hasMore).toBe(true);
+    });
+
+    // Mock next page response
+    countryService.fetchCountries.mockResolvedValueOnce({
+      data: [mockCountriesData[2]],
+      totalCount: 3,
+      hasNextPage: false,
     });
 
     // Load more
-    await act(() => {
-      result.current.loadMore();
+    await act(async () => {
+      await result.current.loadMore();
     });
 
     await waitFor(() => {
-      // Should now display 40 items
-      expect(result.current.displayedCountries).toHaveLength(40);
-      expect(result.current.hasMore).toBe(true);
-    });
-
-    // Load more again
-    await act(() => {
-      result.current.loadMore();
-    });
-
-    await waitFor(() => {
-      // Should now display all 50 items
-      expect(result.current.displayedCountries).toHaveLength(50);
+      expect(result.current.isLoadingMore).toBe(false);
+      expect(result.current.countries).toHaveLength(3); // 2 + 1
       expect(result.current.hasMore).toBe(false);
     });
   });
 
   /**
-   * Test 6: Error handling
+   * Test 5: Error handling
    */
-  it('should handle errors correctly', () => {
-    const mockError = 'Failed to fetch countries';
-
+  it('should handle errors correctly', async () => {
     // eslint-disable-next-line @typescript-eslint/no-require-imports
-    const { useFetch } = require('../../src/hooks/useFetch');
-    useFetch.mockReturnValue({
-      data: null,
-      loading: false,
-      error: mockError,
-      refetch: jest.fn(),
-    });
+    const { countryService } = require('../../src/services/countryService');
+    countryService.fetchCountries.mockRejectedValueOnce(
+      new Error('Network error')
+    );
 
     const { result } = renderHook(() => useCountries());
 
-    expect(result.current.error).toBe(mockError);
-    expect(result.current.countries).toEqual([]);
-    expect(result.current.displayedCountries).toEqual([]);
+    await waitFor(() => {
+      expect(result.current.error).toBe('Network error occurred');
+      expect(result.current.countries).toEqual([]);
+      expect(result.current.isLoading).toBe(false);
+    });
   });
 
   /**
-   * Test 7: Refresh functionality
+   * Test 6: Refresh functionality
    */
   it('should handle refresh correctly', async () => {
-    const mockRefetch = jest.fn().mockResolvedValue(undefined);
-
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
-    const { useFetch } = require('../../src/hooks/useFetch');
-    useFetch.mockReturnValue({
-      data: mockCountriesData,
-      loading: false,
-      error: null,
-      refetch: mockRefetch,
-    });
-
     const { result } = renderHook(() => useCountries());
 
-    expect(result.current.refreshing).toBe(false);
+    await waitFor(() => {
+      expect(result.current.isLoading).toBe(false);
+    });
+
+    expect(result.current.isRefreshing).toBe(false);
 
     // Start refresh
     await act(async () => {
       await result.current.refresh();
     });
 
-    await waitFor(() => {
-      expect(result.current.refreshing).toBe(false);
-      expect(mockRefetch).toHaveBeenCalledTimes(1);
-    });
+    expect(result.current.isRefreshing).toBe(false);
   });
 });

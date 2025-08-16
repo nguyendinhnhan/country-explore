@@ -13,8 +13,8 @@ A React Native app built for the 4-hour test task. Implements all core requireme
 | **Favorites & Notes** | ✅ | Star/unstar + personal notes with AsyncStorage |
 | **Error Handling** | ✅ | Retry buttons and error states |
 | **TypeScript** | ✅ | Full type safety |
-| **Custom Hooks** | ✅ | `useCountries`, `useFavorites`, `useFetch`, `useDebounce` |
-| **Tests** | ✅ | 36 tests across hooks and components |
+| **Custom Hooks** | ✅ | `useCountries`, `useFavorites`, `useDebounce` |
+| **Tests** | ✅ | 35 tests across hooks and components |
 | **Performance** | ✅ | Lazy loading, memoization, debouncing |
 
 ### Stretch Goals

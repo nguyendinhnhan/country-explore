@@ -6,3 +6,17 @@ import '@testing-library/jest-native/extend-expect';
 jest.mock('@expo/vector-icons', () => ({
   Ionicons: 'Ionicons',
 }));
+
+// Suppress React act() warnings and other verbose test warnings
+const originalError = console.error;
+console.error = (...args) => {
+  if (
+    typeof args[0] === 'string' &&
+    (args[0].includes('Warning: An update to') ||
+      args[0].includes('act(') ||
+      args[0].includes('ReactDOM.render is no longer supported'))
+  ) {
+    return;
+  }
+  originalError.call(console, ...args);
+};

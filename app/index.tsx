@@ -19,8 +19,9 @@ import { Country } from '../src/types/Country';
 
 export default function CountriesScreen() {
   const {
-    displayedCountries,
-    loading,
+    countries,
+    isLoading,
+    isLoadingMore,
     error,
     searchQuery,
     setSearchQuery,
@@ -28,8 +29,7 @@ export default function CountriesScreen() {
     setSelectedRegion,
     hasMore,
     loadMore,
-    retry,
-    refreshing,
+    isRefreshing,
     refresh,
   } = useCountries();
 
@@ -61,30 +61,31 @@ export default function CountriesScreen() {
 
   // Handle load more
   const handleLoadMore = useCallback(() => {
-    if (hasMore && !loading) {
+    if (hasMore && !isLoadingMore) {
       loadMore();
     }
-  }, [hasMore, loading, loadMore]);
+  }, [hasMore, isLoadingMore, loadMore]);
 
   const renderFooter = () => {
-    if (!loading || displayedCountries.length === 0) {
-      return null;
+    if (isLoadingMore && countries.length > 0) {
+      return <LoadingState message="Loading more countries..." />;
     }
-    return <LoadingState message="Loading more countries..." />;
+
+    return null;
   };
 
   // Show loading state for initial load
-  if (loading && displayedCountries.length === 0) {
+  if (isLoading && countries.length === 0) {
     return <LoadingState message="Loading countries..." />;
   }
 
   // Show error state
-  if (error && displayedCountries.length === 0) {
-    return <ErrorState message={error} onRetry={retry} />;
+  if (error && countries.length === 0) {
+    return <ErrorState message={error} onRetry={refresh} />;
   }
 
   // Show empty state when no results
-  if (!loading && displayedCountries.length === 0) {
+  if (!isLoading && countries.length === 0) {
     const emptyMessage =
       searchQuery || selectedRegion !== 'All'
         ? 'No countries found matching your search criteria'
@@ -109,7 +110,7 @@ export default function CountriesScreen() {
       />
 
       <FlatList
-        data={displayedCountries.filter(Boolean)}
+        data={countries.filter(Boolean)}
         renderItem={renderCountryItem}
         keyExtractor={keyExtractor}
         contentContainerStyle={styles.listContainer}
@@ -119,21 +120,11 @@ export default function CountriesScreen() {
         ListFooterComponent={renderFooter}
         refreshControl={
           <RefreshControl
-            refreshing={refreshing}
+            refreshing={isRefreshing}
             onRefresh={refresh}
             tintColor="#007AFF"
           />
         }
-        removeClippedSubviews={true}
-        maxToRenderPerBatch={10}
-        windowSize={10}
-        initialNumToRender={8}
-        updateCellsBatchingPeriod={50}
-        getItemLayout={(data, index) => ({
-          length: 120,
-          offset: 120 * index,
-          index,
-        })}
       />
 
       {selectedCountry && (

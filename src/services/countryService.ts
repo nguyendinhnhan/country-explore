@@ -101,7 +101,7 @@ class CountryService {
     }
 
     // Apply region filter
-    if (region !== 'All') {
+    if (region !== 'All' && region !== '') {
       filteredCountries = filteredCountries.filter(
         (country) => country.region === region
       );
