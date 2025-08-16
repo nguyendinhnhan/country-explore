@@ -1,12 +1,12 @@
 import { Ionicons } from '@expo/vector-icons';
 import React from 'react';
 import {
-    ScrollView,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 import { Region } from '../types/Country';
 
@@ -17,7 +17,14 @@ interface SearchBarProps {
   onRegionChange: (region: Region) => void;
 }
 
-const regions: Region[] = ['All', 'Africa', 'Americas', 'Asia', 'Europe', 'Oceania'];
+const regions: Region[] = [
+  'All',
+  'Africa',
+  'Americas',
+  'Asia',
+  'Europe',
+  'Oceania',
+];
 
 export default function SearchBar({
   searchQuery,
@@ -29,7 +36,12 @@ export default function SearchBar({
     <View style={styles.container}>
       {/* Search Input */}
       <View style={styles.searchContainer}>
-        <Ionicons name="search" size={20} color="#8E8E93" style={styles.searchIcon} />
+        <Ionicons
+          name="search"
+          size={20}
+          color="#8E8E93"
+          style={styles.searchIcon}
+        />
         <TextInput
           style={styles.searchInput}
           placeholder="Search countries..."

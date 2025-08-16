@@ -4,7 +4,8 @@ import { useDebounce } from './useDebounce';
 import { useFetch } from './useFetch';
 
 const API_BASE_URL = 'https://restcountries.com/v3.1';
-const API_FIELDS = 'name,flags,region,population,capital,languages,currencies,cca3';
+const API_FIELDS =
+  'name,flags,region,population,capital,languages,currencies,cca3';
 const ITEMS_PER_PAGE = 20;
 const SEARCH_DEBOUNCE_DELAY = 300;
 
@@ -30,9 +31,9 @@ const fetchCountries = async (): Promise<Country[]> => {
   if (!response.ok) {
     throw new Error(`HTTP error! status: ${response.status}`);
   }
-  
+
   const data = await response.json();
-  
+
   // Transform API data to match our Country interface
   return data.map((country: any) => ({
     cca3: country.cca3,
@@ -72,23 +73,28 @@ export const useCountries = (): UseCountriesReturn => {
 
   // Memoized filtered countries based on search and region
   const filteredCountries = useMemo(() => {
-    if (!allCountries) return [];
-    
+    if (!allCountries) {
+      return [];
+    }
+
     let filtered = allCountries;
 
     // Filter by search query (debounced)
     if (debouncedSearchQuery.trim()) {
       const query = debouncedSearchQuery.toLowerCase();
-      filtered = filtered.filter(country =>
-        country.name.common.toLowerCase().includes(query) ||
-        country.name.official.toLowerCase().includes(query) ||
-        country.capital?.some(cap => cap.toLowerCase().includes(query))
+      filtered = filtered.filter(
+        (country) =>
+          country.name.common.toLowerCase().includes(query) ||
+          country.name.official.toLowerCase().includes(query) ||
+          country.capital?.some((cap) => cap.toLowerCase().includes(query))
       );
     }
 
     // Filter by region
     if (selectedRegion !== 'All') {
-      filtered = filtered.filter(country => country.region === selectedRegion);
+      filtered = filtered.filter(
+        (country) => country.region === selectedRegion
+      );
     }
 
     return filtered;
@@ -112,7 +118,7 @@ export const useCountries = (): UseCountriesReturn => {
   // Load more items (pagination)
   const loadMore = useCallback(() => {
     if (hasMore && !loading) {
-      setCurrentPage(prev => prev + 1);
+      setCurrentPage((prev) => prev + 1);
     }
   }, [hasMore, loading]);
 

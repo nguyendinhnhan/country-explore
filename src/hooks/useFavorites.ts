@@ -56,20 +56,28 @@ export function useFavorites(): UseFavoritesReturn {
   }, []);
 
   // Toggle favorite status
-  const toggleFavorite = useCallback(async (country: Country) => {
-    const isCurrentlyFavorite = favorites.some(fav => fav.cca3 === country.cca3);
-    
-    if (isCurrentlyFavorite) {
-      await removeFavorite(country.cca3);
-    } else {
-      await addFavorite(country);
-    }
-  }, [favorites, addFavorite, removeFavorite]);
+  const toggleFavorite = useCallback(
+    async (country: Country) => {
+      const isCurrentlyFavorite = favorites.some(
+        (fav) => fav.cca3 === country.cca3
+      );
+
+      if (isCurrentlyFavorite) {
+        await removeFavorite(country.cca3);
+      } else {
+        await addFavorite(country);
+      }
+    },
+    [favorites, addFavorite, removeFavorite]
+  );
 
   // Update note for a favorite
   const updateNote = useCallback(async (countryCode: string, note: string) => {
     try {
-      const updatedFavorites = await StorageService.updateFavoriteNote(countryCode, note);
+      const updatedFavorites = await StorageService.updateFavoriteNote(
+        countryCode,
+        note
+      );
       setFavorites(updatedFavorites);
     } catch (error) {
       console.error('Error updating note:', error);
@@ -78,15 +86,21 @@ export function useFavorites(): UseFavoritesReturn {
   }, []);
 
   // Check if a country is favorited
-  const isFavorite = useCallback((country: Country) => {
-    return favorites.some(fav => fav.cca3 === country.cca3);
-  }, [favorites]);
+  const isFavorite = useCallback(
+    (country: Country) => {
+      return favorites.some((fav) => fav.cca3 === country.cca3);
+    },
+    [favorites]
+  );
 
   // Get favorite note
-  const getFavoriteNote = useCallback((country: Country) => {
-    const favorite = favorites.find(fav => fav.cca3 === country.cca3);
-    return favorite?.note || '';
-  }, [favorites]);
+  const getFavoriteNote = useCallback(
+    (country: Country) => {
+      const favorite = favorites.find((fav) => fav.cca3 === country.cca3);
+      return favorite?.note || '';
+    },
+    [favorites]
+  );
 
   // Refresh favorites (useful for focus events)
   const refreshFavorites = useCallback(async () => {

@@ -23,7 +23,7 @@ export const useFetch = <T>(
   options: UseFetchOptions = {}
 ): UseFetchReturn<T> => {
   const { autoFetch = true } = options;
-  
+
   const [data, setData] = useState<T | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
@@ -36,11 +36,12 @@ export const useFetch = <T>(
     try {
       setLoading(true);
       setError(null);
-      
+
       const result = await fetchFn();
       setData(result);
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'An error occurred';
+      const errorMessage =
+        err instanceof Error ? err.message : 'An error occurred';
       setError(errorMessage);
       console.error('useFetch error:', err);
     } finally {

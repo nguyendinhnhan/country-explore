@@ -1,12 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import React from 'react';
-import {
-    Image,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
-} from 'react-native';
+import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Country } from '../types/Country';
 
 interface CountryCardProps {
@@ -62,9 +56,9 @@ export default function CountryCard({
               hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
             >
               <Ionicons
-                name={isFavorite ? "heart" : "heart-outline"}
+                name={isFavorite ? 'heart' : 'heart-outline'}
                 size={20}
-                color={isFavorite ? "#FF3B30" : "#8E8E93"}
+                color={isFavorite ? '#FF3B30' : '#8E8E93'}
               />
             </TouchableOpacity>
           )}

@@ -43,23 +43,18 @@ export default function CountryListItem({
 
   return (
     <View style={styles.wrapper}>
-      <TouchableOpacity 
-        style={styles.container} 
-        onPress={onPress}
-      >
+      <TouchableOpacity style={styles.container} onPress={onPress}>
         <Image
           source={{ uri: country.flags.png }}
           style={styles.flag}
           resizeMode="cover"
         />
-        
+
         <View style={styles.infoContainer}>
           <Text style={styles.countryName} numberOfLines={1}>
             {country.name.common}
           </Text>
-          <Text style={styles.region}>
-            {country.region}
-          </Text>
+          <Text style={styles.region}>{country.region}</Text>
         </View>
 
         {showFavoriteButton && onFavoritePress && (
@@ -69,9 +64,9 @@ export default function CountryListItem({
             hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
           >
             <Ionicons
-              name={isFavorite ? "star" : "star-outline"}
+              name={isFavorite ? 'star' : 'star-outline'}
               size={20}
-              color={isFavorite ? "#FFD700" : "#8E8E93"}
+              color={isFavorite ? '#FFD700' : '#8E8E93'}
             />
           </TouchableOpacity>
         )}
@@ -93,10 +88,13 @@ export default function CountryListItem({
               maxLength={100}
             />
           ) : (
-            <TouchableOpacity style={styles.noteDisplayContainer} onPress={handleNotePress}>
+            <TouchableOpacity
+              style={styles.noteDisplayContainer}
+              onPress={handleNotePress}
+            >
               <Ionicons name="create-outline" size={16} color="#8E8E93" />
               <Text style={styles.noteDisplay}>
-                {note || "Tap to add a note..."}
+                {note || 'Tap to add a note...'}
               </Text>
             </TouchableOpacity>
           )}

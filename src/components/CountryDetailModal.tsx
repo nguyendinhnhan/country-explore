@@ -30,7 +30,9 @@ export default function CountryDetailModal({
   onFavoritePress,
   isFavorite = false,
 }: CountryDetailModalProps) {
-  if (!country) return null;
+  if (!country) {
+    return null;
+  }
 
   const formatPopulation = (population: number) => {
     if (population >= 1000000) {
@@ -49,14 +51,18 @@ export default function CountryDetailModal({
   };
 
   const getLanguages = () => {
-    if (!country.languages) return 'N/A';
+    if (!country.languages) {
+      return 'N/A';
+    }
     return Object.values(country.languages).join(', ');
   };
 
   const getCurrencies = () => {
-    if (!country.currencies) return 'N/A';
+    if (!country.currencies) {
+      return 'N/A';
+    }
     return Object.values(country.currencies)
-      .map(currency => `${currency.name} (${currency.symbol})`)
+      .map((currency) => `${currency.name} (${currency.symbol})`)
       .join(', ');
   };
 
@@ -70,24 +76,21 @@ export default function CountryDetailModal({
       <SafeAreaView style={styles.container}>
         {/* Header */}
         <View style={styles.header}>
-          <TouchableOpacity
-            style={styles.closeButton}
-            onPress={onClose}
-          >
+          <TouchableOpacity style={styles.closeButton} onPress={onClose}>
             <Ionicons name="close" size={24} color="#007AFF" />
           </TouchableOpacity>
-          
+
           <Text style={styles.headerTitle}>Country Details</Text>
-          
+
           {onFavoritePress && (
             <TouchableOpacity
               style={styles.favoriteButton}
               onPress={onFavoritePress}
             >
               <Ionicons
-                name={isFavorite ? "star" : "star-outline"}
+                name={isFavorite ? 'star' : 'star-outline'}
                 size={24}
-                color={isFavorite ? "#FFD700" : "#007AFF"}
+                color={isFavorite ? '#FFD700' : '#007AFF'}
               />
             </TouchableOpacity>
           )}
@@ -156,9 +159,7 @@ function InfoCard({ icon, title, value, subtitle }: InfoCardProps) {
       <Text style={styles.infoCardValue} numberOfLines={2}>
         {value}
       </Text>
-      {subtitle && (
-        <Text style={styles.infoCardSubtitle}>{subtitle}</Text>
-      )}
+      {subtitle && <Text style={styles.infoCardSubtitle}>{subtitle}</Text>}
     </View>
   );
 }
@@ -200,7 +201,7 @@ const styles = StyleSheet.create({
   },
   flagLarge: {
     width: screenWidth * 0.6,
-    height: (screenWidth * 0.6) * 0.6,
+    height: screenWidth * 0.6 * 0.6,
     borderRadius: 12,
     marginBottom: 20,
   },

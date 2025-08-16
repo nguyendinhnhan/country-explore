@@ -20,7 +20,13 @@ export interface FavoriteCountry extends Country {
   dateAdded: string;
 }
 
-export type Region = 'Africa' | 'Americas' | 'Asia' | 'Europe' | 'Oceania' | 'All';
+export type Region =
+  | 'Africa'
+  | 'Americas'
+  | 'Asia'
+  | 'Europe'
+  | 'Oceania'
+  | 'All';
 
 export interface SearchFilters {
   region: Region;

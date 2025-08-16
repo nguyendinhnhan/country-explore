@@ -2,16 +2,21 @@
 
 ### 1. Goal
 
-Build a Country Explorer mobile app using **React Native**, enabling users to browse countries, search/filter, view details, favorite countries, and write personal notes — with focus on clean architecture, state management, and performance.
+Build a Country Explorer mobile app using **React Native**, enabling users to browse countries,
+search/filter, view details, favorite countries, and write personal notes — with focus on clean
+architecture, state management, and performance.
 
 ---
 
 ## 2. Assumptions
 
-* I’ll use **Expo SDK** to simplify development and submission.
-* Navigation will be handled using **Expo Router**.
-* I’ll follow the **Time-box of \~4 hours**, likely between `14h–18h tomorrow`, and submit the code after that.
-* The repository will be public (for example: [https://github.com/nguyendinhnhan/country-explore](https://github.com/nguyendinhnhan/country-explore)), and shared upon completion.
+- I’ll use **Expo SDK** to simplify development and submission.
+- Navigation will be handled using **Expo Router**.
+- I’ll follow the **Time-box of \~4 hours**, likely between `14h–18h tomorrow`, and submit the code
+  after that.
+- The repository will be public (for example:
+  [https://github.com/nguyendinhnhan/country-explore](https://github.com/nguyendinhnhan/country-explore)),
+  and shared upon completion.
 
 ---
 
@@ -20,7 +25,7 @@ Build a Country Explorer mobile app using **React Native**, enabling users to br
 | Area                 | Library / Tool                              | Purpose / Notes                                                   |
 | -------------------- | ------------------------------------------- | ----------------------------------------------------------------- |
 | Framework            | `Expo`                                      | Fast development, deployment, testing                             |
-| Navigation           | `expo-router + react-navigation`                               | File-based routing for screens/tabs                               |
+| Navigation           | `expo-router + react-navigation`            | File-based routing for screens/tabs                               |
 | State Management     | `React Context + useState`                  | Lightweight solution for shared state                             |
 | Local Storage        | `@react-native-async-storage/async-storage` | To persist favorites and notes locally                            |
 | Toast Notifications  | `react-native-toast-message`                | Feedback for actions (e.g. added to favorites, error retry, etc.) |
@@ -66,7 +71,7 @@ Build a Country Explorer mobile app using **React Native**, enabling users to br
 ### 5.2. Stretch Goals (time permitting)
 
 1. Local-Storage Sync (favorites & notes) [✔ planned]
-2. Simple End-to-End Test 
+2. Simple End-to-End Test
 3. LLM Fun-Fact Call
 
 ---
@@ -78,4 +83,3 @@ Build a Country Explorer mobile app using **React Native**, enabling users to br
 | Unit Tests      | Jest, React Testing Library | `useCountries`, local storage helpers               |
 | Component Tests | React Testing Library       | `CountryCard`, `SearchBar`, etc.                    |
 | Manual Testing  | Expo Go                     | Check navigation, error handling, persistence, etc. |
-

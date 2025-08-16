@@ -32,12 +32,16 @@ class StorageService {
   /**
    * Add a country to favorites
    */
-  static async addFavorite(country: Omit<FavoriteCountry, 'dateAdded' | 'note'>): Promise<FavoriteCountry[]> {
+  static async addFavorite(
+    country: Omit<FavoriteCountry, 'dateAdded' | 'note'>
+  ): Promise<FavoriteCountry[]> {
     try {
       const currentFavorites = await this.loadFavorites();
-      
+
       // Check if already exists
-      const existingIndex = currentFavorites.findIndex(fav => fav.cca3 === country.cca3);
+      const existingIndex = currentFavorites.findIndex(
+        (fav) => fav.cca3 === country.cca3
+      );
       if (existingIndex >= 0) {
         return currentFavorites;
       }
@@ -63,7 +67,9 @@ class StorageService {
   static async removeFavorite(countryCode: string): Promise<FavoriteCountry[]> {
     try {
       const currentFavorites = await this.loadFavorites();
-      const updatedFavorites = currentFavorites.filter(fav => fav.cca3 !== countryCode);
+      const updatedFavorites = currentFavorites.filter(
+        (fav) => fav.cca3 !== countryCode
+      );
       await this.saveFavorites(updatedFavorites);
       return updatedFavorites;
     } catch (error) {
@@ -75,10 +81,13 @@ class StorageService {
   /**
    * Update note for a favorite country
    */
-  static async updateFavoriteNote(countryCode: string, note: string): Promise<FavoriteCountry[]> {
+  static async updateFavoriteNote(
+    countryCode: string,
+    note: string
+  ): Promise<FavoriteCountry[]> {
     try {
       const currentFavorites = await this.loadFavorites();
-      const updatedFavorites = currentFavorites.map(fav =>
+      const updatedFavorites = currentFavorites.map((fav) =>
         fav.cca3 === countryCode ? { ...fav, note } : fav
       );
       await this.saveFavorites(updatedFavorites);
@@ -95,7 +104,7 @@ class StorageService {
   static async isFavorite(countryCode: string): Promise<boolean> {
     try {
       const favorites = await this.loadFavorites();
-      return favorites.some(fav => fav.cca3 === countryCode);
+      return favorites.some((fav) => fav.cca3 === countryCode);
     } catch (error) {
       console.error('Error checking favorite status:', error);
       return false;
@@ -108,7 +117,7 @@ class StorageService {
   static async getFavoriteNote(countryCode: string): Promise<string> {
     try {
       const favorites = await this.loadFavorites();
-      const favorite = favorites.find(fav => fav.cca3 === countryCode);
+      const favorite = favorites.find((fav) => fav.cca3 === countryCode);
       return favorite?.note || '';
     } catch (error) {
       console.error('Error getting favorite note:', error);

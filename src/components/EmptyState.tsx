@@ -1,10 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import React from 'react';
-import {
-    StyleSheet,
-    Text,
-    View,
-} from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 
 interface EmptyStateProps {
   title: string;
@@ -12,7 +8,11 @@ interface EmptyStateProps {
   iconName: keyof typeof Ionicons.glyphMap;
 }
 
-export default function EmptyState({ title, message, iconName }: EmptyStateProps) {
+export default function EmptyState({
+  title,
+  message,
+  iconName,
+}: EmptyStateProps) {
   return (
     <View style={styles.container}>
       <Ionicons name={iconName} size={64} color="#C7C7CC" />

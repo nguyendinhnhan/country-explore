@@ -43,17 +43,20 @@ export default function CountriesScreen() {
   const [selectedCountry, setSelectedCountry] = useState<Country | null>(null);
 
   // Render country item
-  const renderCountryItem: ListRenderItem<Country> = useCallback(({ item }) => (
-    <CountryListItem
-      country={item}
-      onPress={() => setSelectedCountry(item)}
-      onFavoritePress={() => toggleFavorite(item)}
-      onNoteChange={(note) => updateFavoriteNote(item.cca3, note)}
-      isFavorite={isFavorite(item)}
-      note={getFavoriteNote(item)}
-      showFavoriteButton={true}
-    />
-  ), [toggleFavorite, updateFavoriteNote, isFavorite, getFavoriteNote]);
+  const renderCountryItem: ListRenderItem<Country> = useCallback(
+    ({ item }) => (
+      <CountryListItem
+        country={item}
+        onPress={() => setSelectedCountry(item)}
+        onFavoritePress={() => toggleFavorite(item)}
+        onNoteChange={(note) => updateFavoriteNote(item.cca3, note)}
+        isFavorite={isFavorite(item)}
+        note={getFavoriteNote(item)}
+        showFavoriteButton={true}
+      />
+    ),
+    [toggleFavorite, updateFavoriteNote, isFavorite, getFavoriteNote]
+  );
 
   // Handle load more
   const handleLoadMore = useCallback(() => {
@@ -64,7 +67,9 @@ export default function CountriesScreen() {
 
   // Memoized render footer
   const renderFooter = useMemo(() => {
-    if (!loading || displayedCountries.length === 0) return null;
+    if (!loading || displayedCountries.length === 0) {
+      return null;
+    }
     return <LoadingState message="Loading more countries..." />;
   }, [loading, displayedCountries.length]);
 
@@ -80,22 +85,18 @@ export default function CountriesScreen() {
 
   // Show error state
   if (error && displayedCountries.length === 0) {
-    return (
-      <ErrorState
-        message={error}
-        onRetry={retry}
-      />
-    );
+    return <ErrorState message={error} onRetry={retry} />;
   }
 
   // Show empty state when no results
   if (!loading && displayedCountries.length === 0) {
-    const emptyMessage = searchQuery || selectedRegion !== 'All'
-      ? 'No countries found matching your search criteria'
-      : 'No countries available';
-    
+    const emptyMessage =
+      searchQuery || selectedRegion !== 'All'
+        ? 'No countries found matching your search criteria'
+        : 'No countries available';
+
     return (
-      <EmptyState 
+      <EmptyState
         title="No Countries"
         message={emptyMessage}
         iconName="globe-outline"
@@ -111,7 +112,7 @@ export default function CountriesScreen() {
         selectedRegion={selectedRegion}
         onRegionChange={setSelectedRegion}
       />
-      
+
       <FlatList
         data={displayedCountries}
         renderItem={renderCountryItem}
