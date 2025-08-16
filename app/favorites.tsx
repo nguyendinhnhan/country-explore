@@ -1,9 +1,9 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import { FlatList, ListRenderItem, StyleSheet, View } from 'react-native';
 
+import CountryDetailModal from '../src/components/CountryDetailModal';
 import CountryListItem from '../src/components/CountryListItem';
 import EmptyState from '../src/components/EmptyState';
-import CountryDetailModal from '../src/components/LazyCountryDetailModal';
 import { useFavoritesContext } from '../src/contexts/FavoritesContext';
 import { Country, FavoriteCountry } from '../src/types/Country';
 

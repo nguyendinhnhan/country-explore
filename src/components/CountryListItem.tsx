@@ -53,17 +53,6 @@ function CountryListItem({
     onFavoritePress?.();
   }, [onFavoritePress]);
 
-  const formatPopulation = (population: number): string => {
-    return population.toLocaleString();
-  };
-
-  const getCapitalString = (capital?: string[]): string => {
-    if (!capital || capital.length === 0) {
-      return 'N/A';
-    }
-    return capital.join(', ');
-  };
-
   return (
     <View style={styles.wrapper}>
       <TouchableOpacity
@@ -82,12 +71,6 @@ function CountryListItem({
             {country.name.common}
           </Text>
           <Text style={styles.region}>{country.region}</Text>
-          <Text style={styles.capital}>
-            {getCapitalString(country.capital)}
-          </Text>
-          <Text style={styles.population}>
-            {formatPopulation(country.population)}
-          </Text>
         </View>
 
         {showFavoriteButton && onFavoritePress && (
@@ -98,7 +81,7 @@ function CountryListItem({
             testID="favorite-button"
           >
             <Ionicons
-              name={isFavorite ? 'heart' : 'heart-outline'}
+              name={isFavorite ? 'star' : 'star-outline'}
               size={20}
               color={isFavorite ? '#FFD700' : '#8E8E93'}
               testID="favorite-icon"
@@ -180,15 +163,6 @@ const styles = StyleSheet.create({
     fontSize: 15,
     color: '#8E8E93',
     marginBottom: 2,
-  },
-  capital: {
-    fontSize: 14,
-    color: '#666',
-    marginBottom: 2,
-  },
-  population: {
-    fontSize: 14,
-    color: '#666',
   },
   favoriteButton: {
     padding: 8,

@@ -7,10 +7,10 @@ import {
   View,
 } from 'react-native';
 
+import CountryDetailModal from '../src/components/CountryDetailModal';
 import CountryListItem from '../src/components/CountryListItem';
 import EmptyState from '../src/components/EmptyState';
 import ErrorState from '../src/components/ErrorState';
-import LazyCountryDetailModal from '../src/components/LazyCountryDetailModal';
 import LoadingState from '../src/components/LoadingState';
 import SearchBar from '../src/components/SearchBar';
 import { useFavoritesContext } from '../src/contexts/FavoritesContext';
@@ -137,7 +137,7 @@ export default function CountriesScreen() {
       />
 
       {selectedCountry && (
-        <LazyCountryDetailModal
+        <CountryDetailModal
           country={selectedCountry}
           visible={true}
           onClose={() => setSelectedCountry(null)}
