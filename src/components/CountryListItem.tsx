@@ -1,5 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import {
   Image,
   StyleSheet,
@@ -20,7 +20,8 @@ interface CountryListItemProps {
   onNoteChange?: (note: string) => void;
 }
 
-export default function CountryListItem({
+// In React 19, memo is less critical for simple components, but still useful for FlatList items
+function CountryListItem({
   country,
   onPress,
   onFavoritePress,
@@ -31,15 +32,26 @@ export default function CountryListItem({
 }: CountryListItemProps) {
   const [isEditingNote, setIsEditingNote] = useState(false);
 
-  const handleNoteSubmit = () => {
+  const handleNoteSubmit = useCallback(() => {
     setIsEditingNote(false);
-  };
+  }, []);
 
-  const handleNotePress = () => {
+  const handleNotePress = useCallback(() => {
     if (isFavorite) {
       setIsEditingNote(true);
     }
-  };
+  }, [isFavorite]);
+
+  const handleNoteChange = useCallback(
+    (text: string) => {
+      onNoteChange?.(text);
+    },
+    [onNoteChange]
+  );
+
+  const handleFavoritePress = useCallback(() => {
+    onFavoritePress?.();
+  }, [onFavoritePress]);
 
   return (
     <View style={styles.wrapper}>
@@ -59,7 +71,7 @@ export default function CountryListItem({
 
         {showFavoriteButton && onFavoritePress && (
           <TouchableOpacity
-            onPress={onFavoritePress}
+            onPress={handleFavoritePress}
             style={styles.favoriteButton}
             hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
           >
@@ -80,7 +92,7 @@ export default function CountryListItem({
               style={styles.noteInput}
               placeholder="Add a note about this country..."
               value={note}
-              onChangeText={onNoteChange}
+              onChangeText={handleNoteChange}
               onSubmitEditing={handleNoteSubmit}
               onBlur={handleNoteSubmit}
               autoFocus
@@ -103,6 +115,8 @@ export default function CountryListItem({
     </View>
   );
 }
+
+export default CountryListItem;
 
 const styles = StyleSheet.create({
   wrapper: {

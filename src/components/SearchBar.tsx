@@ -1,5 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
-import React from 'react';
+import React, { useCallback } from 'react';
 import {
   ScrollView,
   StyleSheet,
@@ -32,6 +32,12 @@ export default function SearchBar({
   selectedRegion,
   onRegionChange,
 }: SearchBarProps) {
+  const handleRegionPress = useCallback(
+    (region: Region) => {
+      onRegionChange(region);
+    },
+    [onRegionChange]
+  );
   return (
     <View style={styles.container}>
       {/* Search Input */}
@@ -65,7 +71,7 @@ export default function SearchBar({
               styles.regionButton,
               selectedRegion === region && styles.regionButtonActive,
             ]}
-            onPress={() => onRegionChange(region)}
+            onPress={() => handleRegionPress(region)}
           >
             <Text
               style={[

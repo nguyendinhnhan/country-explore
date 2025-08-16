@@ -71,7 +71,6 @@ export const useCountries = (): UseCountriesReturn => {
     refetch,
   } = useFetch(fetchCountries);
 
-  // Memoized filtered countries based on search and region
   const filteredCountries = useMemo(() => {
     if (!allCountries) {
       return [];
@@ -79,22 +78,27 @@ export const useCountries = (): UseCountriesReturn => {
 
     let filtered = allCountries;
 
-    // Filter by search query (debounced)
-    if (debouncedSearchQuery.trim()) {
-      const query = debouncedSearchQuery.toLowerCase();
-      filtered = filtered.filter(
-        (country) =>
-          country.name.common.toLowerCase().includes(query) ||
-          country.name.official.toLowerCase().includes(query) ||
-          country.capital?.some((cap) => cap.toLowerCase().includes(query))
-      );
-    }
-
     // Filter by region
     if (selectedRegion !== 'All') {
       filtered = filtered.filter(
         (country) => country.region === selectedRegion
       );
+    }
+
+    // Filter by search query
+    if (debouncedSearchQuery.trim()) {
+      const query = debouncedSearchQuery.toLowerCase().trim();
+      filtered = filtered.filter((country) => {
+        const commonName = country.name.common.toLowerCase();
+        const officialName = country.name.official.toLowerCase();
+        const capitals = country.capital?.map((cap) => cap.toLowerCase()) || [];
+
+        return (
+          commonName.includes(query) ||
+          officialName.includes(query) ||
+          capitals.some((cap) => cap.includes(query))
+        );
+      });
     }
 
     return filtered;

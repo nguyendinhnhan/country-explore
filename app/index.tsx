@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import {
   FlatList,
   ListRenderItem,
@@ -7,10 +7,10 @@ import {
   View,
 } from 'react-native';
 
-import CountryDetailModal from '../src/components/CountryDetailModal';
 import CountryListItem from '../src/components/CountryListItem';
 import EmptyState from '../src/components/EmptyState';
 import ErrorState from '../src/components/ErrorState';
+import LazyCountryDetailModal from '../src/components/LazyCountryDetailModal';
 import LoadingState from '../src/components/LoadingState';
 import SearchBar from '../src/components/SearchBar';
 import { useFavoritesContext } from '../src/contexts/FavoritesContext';
@@ -42,7 +42,8 @@ export default function CountriesScreen() {
 
   const [selectedCountry, setSelectedCountry] = useState<Country | null>(null);
 
-  // Render country item
+  const keyExtractor = useCallback((item: Country) => item.cca3, []);
+
   const renderCountryItem: ListRenderItem<Country> = useCallback(
     ({ item }) => (
       <CountryListItem
@@ -65,18 +66,12 @@ export default function CountriesScreen() {
     }
   }, [hasMore, loading, loadMore]);
 
-  // Memoized render footer
-  const renderFooter = useMemo(() => {
+  const renderFooter = () => {
     if (!loading || displayedCountries.length === 0) {
       return null;
     }
     return <LoadingState message="Loading more countries..." />;
-  }, [loading, displayedCountries.length]);
-
-  // Handle refresh
-  const handleRefresh = useCallback(() => {
-    refresh();
-  }, [refresh]);
+  };
 
   // Show loading state for initial load
   if (loading && displayedCountries.length === 0) {
@@ -116,7 +111,7 @@ export default function CountriesScreen() {
       <FlatList
         data={displayedCountries}
         renderItem={renderCountryItem}
-        keyExtractor={(item) => item.cca3}
+        keyExtractor={keyExtractor}
         contentContainerStyle={styles.listContainer}
         showsVerticalScrollIndicator={false}
         onEndReached={handleLoadMore}
@@ -125,22 +120,24 @@ export default function CountriesScreen() {
         refreshControl={
           <RefreshControl
             refreshing={refreshing}
-            onRefresh={handleRefresh}
+            onRefresh={refresh}
             tintColor="#007AFF"
           />
         }
         removeClippedSubviews={true}
         maxToRenderPerBatch={10}
         windowSize={10}
+        initialNumToRender={8}
+        updateCellsBatchingPeriod={50}
         getItemLayout={(data, index) => ({
-          length: 120, // Approximate item height
+          length: 120,
           offset: 120 * index,
           index,
         })}
       />
 
       {selectedCountry && (
-        <CountryDetailModal
+        <LazyCountryDetailModal
           country={selectedCountry}
           visible={true}
           onClose={() => setSelectedCountry(null)}
