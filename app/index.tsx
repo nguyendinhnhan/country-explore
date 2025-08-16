@@ -1,4 +1,3 @@
-import { useFocusEffect } from '@react-navigation/native';
 import React, { useCallback, useMemo, useState } from 'react';
 import {
   FlatList,
@@ -14,8 +13,8 @@ import EmptyState from '../src/components/EmptyState';
 import ErrorState from '../src/components/ErrorState';
 import LoadingState from '../src/components/LoadingState';
 import SearchBar from '../src/components/SearchBar';
+import { useFavoritesContext } from '../src/contexts/FavoritesContext';
 import { useCountries } from '../src/hooks/useCountries';
-import { useFavorites } from '../src/hooks/useFavorites';
 import { Country } from '../src/types/Country';
 
 export default function CountriesScreen() {
@@ -39,17 +38,9 @@ export default function CountriesScreen() {
     updateNote: updateFavoriteNote,
     isFavorite,
     getFavoriteNote,
-    refreshFavorites,
-  } = useFavorites();
+  } = useFavoritesContext();
 
   const [selectedCountry, setSelectedCountry] = useState<Country | null>(null);
-
-  // Refresh favorites when screen focuses
-  useFocusEffect(
-    useCallback(() => {
-      refreshFavorites();
-    }, [refreshFavorites])
-  );
 
   // Render country item
   const renderCountryItem: ListRenderItem<Country> = useCallback(({ item }) => (

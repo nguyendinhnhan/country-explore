@@ -1,4 +1,3 @@
-import { useFocusEffect } from '@react-navigation/native';
 import React, { useCallback, useMemo, useState } from 'react';
 import {
   FlatList,
@@ -10,7 +9,7 @@ import {
 import CountryDetailModal from '../src/components/CountryDetailModal';
 import CountryListItem from '../src/components/CountryListItem';
 import EmptyState from '../src/components/EmptyState';
-import { useFavorites } from '../src/hooks/useFavorites';
+import { useFavoritesContext } from '../src/contexts/FavoritesContext';
 import { Country, FavoriteCountry } from '../src/types/Country';
 
 export default function FavoritesScreen() {
@@ -20,17 +19,9 @@ export default function FavoritesScreen() {
     updateNote,
     isFavorite,
     getFavoriteNote,
-    refreshFavorites,
-  } = useFavorites();
+  } = useFavoritesContext();
 
   const [selectedCountry, setSelectedCountry] = useState<Country | null>(null);
-
-  // Load favorites when screen focuses
-  useFocusEffect(
-    useCallback(() => {
-      refreshFavorites();
-    }, [refreshFavorites])
-  );
 
   // Sort favorites by date added (most recent first)
   const sortedFavorites = useMemo(() => {
