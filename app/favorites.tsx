@@ -1,8 +1,6 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFocusEffect } from '@react-navigation/native';
 import React, { useCallback, useMemo, useState } from 'react';
 import {
-  Alert,
   FlatList,
   ListRenderItem,
   StyleSheet,
@@ -12,58 +10,26 @@ import {
 import CountryDetailModal from '../src/components/CountryDetailModal';
 import CountryListItem from '../src/components/CountryListItem';
 import EmptyState from '../src/components/EmptyState';
+import { useFavorites } from '../src/hooks/useFavorites';
 import { Country, FavoriteCountry } from '../src/types/Country';
 
-const FAVORITES_KEY = 'country_favorites';
-
 export default function FavoritesScreen() {
-  const [favorites, setFavorites] = useState<FavoriteCountry[]>([]);
+  const {
+    favorites,
+    toggleFavorite,
+    updateNote,
+    isFavorite,
+    getFavoriteNote,
+    refreshFavorites,
+  } = useFavorites();
+
   const [selectedCountry, setSelectedCountry] = useState<Country | null>(null);
-
-  const loadFavorites = useCallback(async () => {
-    try {
-      const stored = await AsyncStorage.getItem(FAVORITES_KEY);
-      if (stored) {
-        setFavorites(JSON.parse(stored));
-      }
-    } catch (error) {
-      console.error('Error loading favorites:', error);
-    }
-  }, []);
-
-  const saveFavorites = useCallback(async (newFavorites: FavoriteCountry[]) => {
-    try {
-      await AsyncStorage.setItem(FAVORITES_KEY, JSON.stringify(newFavorites));
-      setFavorites(newFavorites);
-    } catch (error) {
-      console.error('Error saving favorites:', error);
-      Alert.alert('Error', 'Failed to save favorites');
-    }
-  }, []);
-
-  const removeFavorite = useCallback((country: Country) => {
-    const newFavorites = favorites.filter(fav => fav.cca3 !== country.cca3);
-    saveFavorites(newFavorites);
-  }, [favorites, saveFavorites]);
-
-
-  const updateFavoriteNote = useCallback((countryCode: string, note: string) => {
-    const newFavorites = favorites.map(fav =>
-      fav.cca3 === countryCode ? { ...fav, note } : fav
-    );
-    saveFavorites(newFavorites);
-  }, [favorites, saveFavorites]);
-
-  const getFavoriteNote = useCallback((country: Country) => {
-    const favorite = favorites.find(fav => fav.cca3 === country.cca3);
-    return favorite?.note || '';
-  }, [favorites]);
 
   // Load favorites when screen focuses
   useFocusEffect(
     useCallback(() => {
-      loadFavorites();
-    }, [loadFavorites])
+      refreshFavorites();
+    }, [refreshFavorites])
   );
 
   // Sort favorites by date added (most recent first)
@@ -77,13 +43,13 @@ export default function FavoritesScreen() {
     <CountryListItem
       country={item}
       onPress={() => setSelectedCountry(item)}
-      onFavoritePress={() => removeFavorite(item)}
-      onNoteChange={(note) => updateFavoriteNote(item.cca3, note)}
-      isFavorite={true}
+      onFavoritePress={() => toggleFavorite(item)}
+      onNoteChange={(note) => updateNote(item.cca3, note)}
+      isFavorite={isFavorite(item)}
       note={getFavoriteNote(item)}
       showFavoriteButton={true}
     />
-  ), [removeFavorite, updateFavoriteNote, getFavoriteNote]);
+  ), [toggleFavorite, updateNote, isFavorite, getFavoriteNote]);
 
   // Show empty state when no favorites
   if (favorites.length === 0) {
@@ -111,8 +77,8 @@ export default function FavoritesScreen() {
           country={selectedCountry}
           visible={true}
           onClose={() => setSelectedCountry(null)}
-          onFavoritePress={() => removeFavorite(selectedCountry)}
-          isFavorite={true}
+          onFavoritePress={() => toggleFavorite(selectedCountry)}
+          isFavorite={isFavorite(selectedCountry)}
         />
       )}
     </View>
