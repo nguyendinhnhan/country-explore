@@ -1,6 +1,9 @@
 import { Ionicons } from '@expo/vector-icons';
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
+import { useThemeColor } from '@/src/hooks/useThemeColor';
+import { Colors } from '../constants/Colors';
+import { ThemedText } from './ThemedText';
 
 interface EmptyStateProps {
   title: string;
@@ -13,11 +16,18 @@ export default function EmptyState({
   message,
   iconName,
 }: EmptyStateProps) {
+  const background = useThemeColor({}, 'background');
+  const messageColor = useThemeColor({}, 'icon');
+
   return (
-    <View style={styles.container}>
-      <Ionicons name={iconName} size={64} color="#C7C7CC" />
-      <Text style={styles.title}>{title}</Text>
-      <Text style={styles.message}>{message}</Text>
+    <View style={[styles.container, { backgroundColor: background }]}>
+      <Ionicons name={iconName} size={64} color={Colors.light.icon} />
+      <ThemedText type="subtitle" style={styles.title}>
+        {title}
+      </ThemedText>
+      <ThemedText style={[styles.message, { color: messageColor }]}>
+        {message}
+      </ThemedText>
     </View>
   );
 }
@@ -31,17 +41,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 32,
   },
   title: {
-    fontSize: 20,
-    fontWeight: '600',
-    color: '#3C3C43',
     marginTop: 16,
     marginBottom: 8,
-    textAlign: 'center',
   },
   message: {
-    fontSize: 16,
-    color: '#8E8E93',
     textAlign: 'center',
-    lineHeight: 24,
   },
 });

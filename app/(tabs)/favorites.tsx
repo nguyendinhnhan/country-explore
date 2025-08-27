@@ -1,11 +1,18 @@
 import React, { useCallback, useMemo, useState } from 'react';
-import { FlatList, ListRenderItem, StyleSheet, View } from 'react-native';
+import {
+  FlatList,
+  KeyboardAvoidingView,
+  ListRenderItem,
+  Platform,
+  StyleSheet,
+} from 'react-native';
 
-import CountryDetailModal from '../src/components/CountryDetailModal';
-import CountryListItem from '../src/components/CountryListItem';
-import EmptyState from '../src/components/EmptyState';
-import { useFavoritesContext } from '../src/contexts/FavoritesContext';
-import { Country, FavoriteCountry } from '../src/types/Country';
+import CountryDetailModal from '../../src/components/CountryDetailModal';
+import CountryListItem from '../../src/components/CountryListItem';
+import EmptyState from '../../src/components/EmptyState';
+import { useFavoritesContext } from '../../src/contexts/FavoritesContext';
+import { Country, FavoriteCountry } from '../../src/types/Country';
+import { ThemedView } from '@/src/components/ThemedView';
 
 export default function FavoritesScreen() {
   const { favorites, toggleFavorite, updateNote, isFavorite, getFavoriteNote } =
@@ -30,7 +37,6 @@ export default function FavoritesScreen() {
         onNoteChange={(note) => updateNote(item.cca3, note)}
         isFavorite={isFavorite(item)}
         note={getFavoriteNote(item)}
-        showFavoriteButton={true}
       />
     ),
     [toggleFavorite, updateNote, isFavorite, getFavoriteNote]
@@ -48,32 +54,36 @@ export default function FavoritesScreen() {
   }
 
   return (
-    <View style={styles.container}>
-      <FlatList
-        data={sortedFavorites}
-        renderItem={renderFavoriteItem}
-        keyExtractor={(item) => item.cca3}
-        contentContainerStyle={styles.listContainer}
-        showsVerticalScrollIndicator={false}
-      />
-
-      {selectedCountry && (
-        <CountryDetailModal
-          country={selectedCountry}
-          visible={true}
-          onClose={() => setSelectedCountry(null)}
-          onFavoritePress={() => toggleFavorite(selectedCountry)}
-          isFavorite={isFavorite(selectedCountry)}
+    <ThemedView style={styles.container}>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 120 : 0}
+      >
+        <FlatList
+          data={sortedFavorites}
+          renderItem={renderFavoriteItem}
+          keyExtractor={(item) => item.cca3}
+          contentContainerStyle={styles.listContainer}
+          showsVerticalScrollIndicator={false}
         />
-      )}
-    </View>
+
+        {selectedCountry && (
+          <CountryDetailModal
+            country={selectedCountry}
+            visible={true}
+            onClose={() => setSelectedCountry(null)}
+            onFavoritePress={() => toggleFavorite(selectedCountry)}
+            isFavorite={isFavorite(selectedCountry)}
+          />
+        )}
+      </KeyboardAvoidingView>
+    </ThemedView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
   },
   listContainer: {
     padding: 16,

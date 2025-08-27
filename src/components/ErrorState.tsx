@@ -1,6 +1,9 @@
 import { Ionicons } from '@expo/vector-icons';
 import React from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import { useThemeColor } from '@/src/hooks/useThemeColor';
+import { Colors } from '../constants/Colors';
+import { ThemedText } from './ThemedText';
 
 interface ErrorStateProps {
   message: string;
@@ -8,14 +11,22 @@ interface ErrorStateProps {
 }
 
 export default function ErrorState({ message, onRetry }: ErrorStateProps) {
+  const messageColor = useThemeColor({}, 'icon');
+
   return (
     <View style={styles.container}>
-      <Ionicons name="alert-circle-outline" size={64} color="#FF3B30" />
-      <Text style={styles.title}>Oops! Something went wrong</Text>
-      <Text style={styles.message}>{message}</Text>
+      <Ionicons name="alert-circle-outline" size={64} color={Colors.error} />
+      <ThemedText type="subtitle" style={[styles.title]}>
+        Oops! Something went wrong
+      </ThemedText>
+      <ThemedText style={[styles.message, { color: messageColor }]}>
+        {message}
+      </ThemedText>
       {onRetry && (
         <TouchableOpacity style={styles.retryButton} onPress={onRetry}>
-          <Text style={styles.retryText}>Try Again</Text>
+          <ThemedText type="defaultSemiBold" style={styles.retryText}>
+            Try Again
+          </ThemedText>
         </TouchableOpacity>
       )}
     </View>
@@ -27,33 +38,24 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#F8F9FA',
     paddingHorizontal: 32,
   },
   title: {
-    fontSize: 20,
-    fontWeight: '600',
-    color: '#000',
     marginTop: 16,
     marginBottom: 8,
     textAlign: 'center',
   },
   message: {
-    fontSize: 16,
-    color: '#8E8E93',
     textAlign: 'center',
-    lineHeight: 24,
     marginBottom: 24,
   },
   retryButton: {
-    backgroundColor: '#007AFF',
+    backgroundColor: Colors.primaryColor,
     paddingHorizontal: 24,
     paddingVertical: 12,
     borderRadius: 8,
   },
   retryText: {
-    color: '#FFFFFF',
-    fontSize: 16,
-    fontWeight: '600',
+    color: Colors.white,
   },
 });

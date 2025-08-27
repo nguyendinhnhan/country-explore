@@ -4,6 +4,7 @@ import React, {
   useCallback,
   useContext,
   useEffect,
+  useMemo,
   useReducer,
 } from 'react';
 import { Alert } from 'react-native';
@@ -103,6 +104,11 @@ interface FavoritesProviderProps {
 export function FavoritesProvider({ children }: FavoritesProviderProps) {
   const [state, dispatch] = useReducer(favoritesReducer, initialState);
 
+  const favoritesSet = useMemo(
+    () => new Set(state.favorites.map((f) => f.cca3)),
+    [state.favorites]
+  );
+
   // Load favorites from storage
   const loadFavorites = useCallback(async () => {
     try {
@@ -154,9 +160,7 @@ export function FavoritesProvider({ children }: FavoritesProviderProps) {
   // Toggle favorite
   const toggleFavorite = useCallback(
     async (country: Country) => {
-      const isCurrentlyFavorite = state.favorites.some(
-        (f) => f.cca3 === country.cca3
-      );
+      const isCurrentlyFavorite = favoritesSet.has(country.cca3);
 
       if (isCurrentlyFavorite) {
         await removeFavorite(country.cca3);
@@ -164,7 +168,7 @@ export function FavoritesProvider({ children }: FavoritesProviderProps) {
         await addFavorite(country);
       }
     },
-    [state.favorites, addFavorite, removeFavorite]
+    [favoritesSet, addFavorite, removeFavorite]
   );
 
   // Update note
@@ -182,11 +186,8 @@ export function FavoritesProvider({ children }: FavoritesProviderProps) {
 
   // Check if country is favorite
   const isFavorite = useCallback(
-    (country: Country) => {
-      if (!country?.cca3) return false;
-      return state.favorites.some((f) => f.cca3 === country.cca3);
-    },
-    [state.favorites]
+    (country: Country) => !!country?.cca3 && favoritesSet.has(country.cca3),
+    [favoritesSet]
   );
 
   // Get favorite note

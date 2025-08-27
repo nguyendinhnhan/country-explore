@@ -1,110 +1,75 @@
+import React, { useEffect, useState } from 'react';
 import { Ionicons } from '@expo/vector-icons';
-import React, { useCallback } from 'react';
-import {
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from 'react-native';
-import { Region } from '../types/Country';
+import { Platform, StyleSheet, TextInput, View } from 'react-native';
+import { useDebounce, useThemeColor } from '../hooks';
 
 interface SearchBarProps {
   searchQuery: string;
   onSearchChange: (query: string) => void;
-  selectedRegion: Region;
-  onRegionChange: (region: Region) => void;
+  debounceMs?: number;
 }
-
-const regions: Region[] = [
-  'All',
-  'Africa',
-  'Americas',
-  'Asia',
-  'Europe',
-  'Oceania',
-];
 
 export default function SearchBar({
   searchQuery,
   onSearchChange,
-  selectedRegion,
-  onRegionChange,
+  debounceMs = 500,
 }: SearchBarProps) {
-  const handleRegionPress = useCallback(
-    (region: Region) => {
-      onRegionChange(region);
-    },
-    [onRegionChange]
-  );
-  return (
-    <View style={styles.container}>
-      {/* Search Input */}
-      <View style={styles.searchContainer}>
-        <Ionicons
-          name="search"
-          size={20}
-          color="#8E8E93"
-          style={styles.searchIcon}
-        />
-        <TextInput
-          style={styles.searchInput}
-          placeholder="Search countries..."
-          placeholderTextColor="#8E8E93"
-          value={searchQuery}
-          onChangeText={onSearchChange}
-          clearButtonMode="while-editing"
-          returnKeyType="search"
-          autoCorrect={false}
-          autoCapitalize="none"
-        />
-      </View>
+  const textColor = useThemeColor({}, 'text');
+  const iconColor = useThemeColor({}, 'icon');
 
-      {/* Region Filter */}
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        style={styles.regionContainer}
-        contentContainerStyle={styles.regionContent}
-      >
-        {regions.map((region) => (
-          <TouchableOpacity
-            key={region}
-            style={[
-              styles.regionButton,
-              selectedRegion === region && styles.regionButtonActive,
-            ]}
-            onPress={() => handleRegionPress(region)}
-          >
-            <Text
-              style={[
-                styles.regionText,
-                selectedRegion === region && styles.regionTextActive,
-              ]}
-            >
-              {region}
-            </Text>
-          </TouchableOpacity>
-        ))}
-      </ScrollView>
+  const [localQuery, setLocalQuery] = useState('');
+  const debouncedQuery = useDebounce(localQuery, debounceMs);
+
+  const handleClearQuery = () => {
+    setLocalQuery('');
+    onSearchChange('');
+  };
+
+  useEffect(() => {
+    const trimmed = debouncedQuery.trim();
+    if (trimmed !== searchQuery) {
+      onSearchChange(trimmed);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [debouncedQuery]);
+
+  return (
+    <View style={styles.searchContainer}>
+      <Ionicons
+        name="search"
+        size={20}
+        color={iconColor}
+        style={styles.searchIcon}
+      />
+      <TextInput
+        style={[styles.searchInput, { color: textColor }]}
+        placeholder="Search countries..."
+        placeholderTextColor={iconColor}
+        value={localQuery}
+        onChangeText={setLocalQuery}
+        clearButtonMode="while-editing"
+        returnKeyType="search"
+        autoCorrect={false}
+        autoCapitalize="none"
+      />
+      {Platform.OS === 'android' && searchQuery.length > 0 && (
+        <Ionicons
+          name="close-circle"
+          size={20}
+          color={textColor}
+          style={styles.clearIcon}
+          onPress={handleClearQuery}
+        />
+      )}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    backgroundColor: '#FFFFFF',
-    paddingHorizontal: 16,
-    paddingTop: 12,
-    paddingBottom: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: '#E5E5E7',
-  },
   searchContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#F2F2F7',
+    backgroundColor: 'rgba(128, 128, 128, 0.1)',
     borderRadius: 10,
     paddingHorizontal: 12,
     marginBottom: 12,
@@ -116,31 +81,9 @@ const styles = StyleSheet.create({
     flex: 1,
     height: 44,
     fontSize: 16,
-    color: '#000',
   },
-  regionContainer: {
-    marginHorizontal: -16,
-  },
-  regionContent: {
-    paddingHorizontal: 16,
-    gap: 8,
-  },
-  regionButton: {
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 20,
-    backgroundColor: '#F2F2F7',
-    marginRight: 8,
-  },
-  regionButtonActive: {
-    backgroundColor: '#007AFF',
-  },
-  regionText: {
-    fontSize: 14,
-    fontWeight: '500',
-    color: '#3C3C43',
-  },
-  regionTextActive: {
-    color: '#FFFFFF',
+  clearIcon: {
+    marginLeft: 8,
+    opacity: 0.6,
   },
 });

@@ -12,6 +12,16 @@ import {
   View,
 } from 'react-native';
 import { Country } from '../types/Country';
+import {
+  formatPopulation,
+  getCapital,
+  getLanguages,
+  getCurrencies,
+} from '../utils/countryFormatters';
+import { useThemeColor } from '../hooks';
+import { Colors } from '../constants/Colors';
+import { ThemedText } from './ThemedText';
+import { ThemedView } from './ThemedView';
 
 interface CountryDetailModalProps {
   country: Country | null;
@@ -30,41 +40,13 @@ export default function CountryDetailModal({
   onFavoritePress,
   isFavorite = false,
 }: CountryDetailModalProps) {
+  const background = useThemeColor({}, 'background');
+  const itemColor = useThemeColor({}, 'item');
+  const iconColor = useThemeColor({}, 'icon');
+
   if (!country) {
     return null;
   }
-
-  const formatPopulation = (population: number) => {
-    if (population >= 1000000) {
-      return `${(population / 1000000).toFixed(1)} million`;
-    } else if (population >= 1000) {
-      return `${(population / 1000).toFixed(0)} thousand`;
-    }
-    return population.toLocaleString();
-  };
-
-  const getCapital = () => {
-    if (!country.capital || country.capital.length === 0) {
-      return 'N/A';
-    }
-    return country.capital.join(', ');
-  };
-
-  const getLanguages = () => {
-    if (!country.languages) {
-      return 'N/A';
-    }
-    return Object.values(country.languages).join(', ');
-  };
-
-  const getCurrencies = () => {
-    if (!country.currencies) {
-      return 'N/A';
-    }
-    return Object.values(country.currencies)
-      .map((currency) => `${currency.name} (${currency.symbol})`)
-      .join(', ');
-  };
 
   return (
     <Modal
@@ -73,14 +55,21 @@ export default function CountryDetailModal({
       presentationStyle="pageSheet"
       onRequestClose={onClose}
     >
-      <SafeAreaView style={styles.container}>
+      <SafeAreaView style={[styles.container, { backgroundColor: background }]}>
         {/* Header */}
-        <View style={styles.header}>
+        <View
+          style={[
+            styles.header,
+            {
+              backgroundColor: itemColor,
+            },
+          ]}
+        >
           <TouchableOpacity style={styles.closeButton} onPress={onClose}>
-            <Ionicons name="close" size={24} color="#007AFF" />
+            <Ionicons name="close" size={24} color={Colors.primaryColor} />
           </TouchableOpacity>
 
-          <Text style={styles.headerTitle}>Country Details</Text>
+          <ThemedText type="subtitle">Country Details</ThemedText>
 
           {onFavoritePress && (
             <TouchableOpacity
@@ -90,7 +79,7 @@ export default function CountryDetailModal({
               <Ionicons
                 name={isFavorite ? 'star' : 'star-outline'}
                 size={24}
-                color={isFavorite ? '#FFD700' : '#007AFF'}
+                color={isFavorite ? Colors.favoriteColor : Colors.primaryColor}
               />
             </TouchableOpacity>
           )}
@@ -98,18 +87,20 @@ export default function CountryDetailModal({
 
         <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
           {/* Flag and Basic Info */}
-          <View style={styles.flagSection}>
+          <View style={[styles.flagSection, { backgroundColor: itemColor }]}>
             <Image
               source={{ uri: country.flags.png }}
               style={styles.flagLarge}
               resizeMode="contain"
             />
-            <Text style={styles.countryName}>{country.name.common}</Text>
-            <Text style={styles.officialName}>{country.name.official}</Text>
+            <ThemedText type="title">{country.name.common}</ThemedText>
+            <ThemedText style={{ color: iconColor }}>
+              {country.name.official}
+            </ThemedText>
           </View>
 
           {/* Info Cards */}
-          <View style={styles.infoGrid}>
+          <ThemedView style={styles.infoGrid}>
             <InfoCard
               icon="location-outline"
               title="Region"
@@ -118,7 +109,7 @@ export default function CountryDetailModal({
             <InfoCard
               icon="business-outline"
               title="Capital"
-              value={getCapital()}
+              value={getCapital(country)}
             />
             <InfoCard
               icon="people-outline"
@@ -128,14 +119,14 @@ export default function CountryDetailModal({
             <InfoCard
               icon="chatbubble-outline"
               title="Languages"
-              value={getLanguages()}
+              value={getLanguages(country)}
             />
             <InfoCard
               icon="card-outline"
               title="Currency"
-              value={getCurrencies()}
+              value={getCurrencies(country)}
             />
-          </View>
+          </ThemedView>
         </ScrollView>
       </SafeAreaView>
     </Modal>
@@ -150,16 +141,25 @@ interface InfoCardProps {
 }
 
 function InfoCard({ icon, title, value, subtitle }: InfoCardProps) {
+  const itemColor = useThemeColor({}, 'item');
+  const iconColor = useThemeColor({}, 'icon');
+
   return (
-    <View style={styles.infoCard}>
+    <View style={[styles.infoCard, { backgroundColor: itemColor }]}>
       <View style={styles.infoCardHeader}>
-        <Ionicons name={icon} size={20} color="#007AFF" />
-        <Text style={styles.infoCardTitle}>{title}</Text>
+        <Ionicons name={icon} size={20} color={Colors.primaryColor} />
+        <Text style={[styles.infoCardTitle, { color: iconColor }]}>
+          {title}
+        </Text>
       </View>
-      <Text style={styles.infoCardValue} numberOfLines={2}>
+      <ThemedText type="defaultSemiBold" numberOfLines={2}>
         {value}
-      </Text>
-      {subtitle && <Text style={styles.infoCardSubtitle}>{subtitle}</Text>}
+      </ThemedText>
+      {subtitle && (
+        <Text style={[styles.infoCardSubtitle, { color: iconColor }]}>
+          {subtitle}
+        </Text>
+      )}
     </View>
   );
 }
@@ -167,7 +167,6 @@ function InfoCard({ icon, title, value, subtitle }: InfoCardProps) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F8F9FA',
   },
   header: {
     flexDirection: 'row',
@@ -175,17 +174,11 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingHorizontal: 16,
     paddingVertical: 12,
-    backgroundColor: '#FFFFFF',
     borderBottomWidth: 1,
-    borderBottomColor: '#E5E5E7',
+    borderBottomColor: 'rgba(128, 128, 128, 0.25)',
   },
   closeButton: {
     padding: 8,
-  },
-  headerTitle: {
-    fontSize: 17,
-    fontWeight: '600',
-    color: '#000',
   },
   favoriteButton: {
     padding: 8,
@@ -195,7 +188,6 @@ const styles = StyleSheet.create({
   },
   flagSection: {
     alignItems: 'center',
-    backgroundColor: '#FFFFFF',
     paddingVertical: 32,
     marginBottom: 16,
   },
@@ -203,26 +195,13 @@ const styles = StyleSheet.create({
     width: screenWidth * 0.6,
     height: screenWidth * 0.6 * 0.6,
     borderRadius: 12,
-    marginBottom: 20,
-  },
-  countryName: {
-    fontSize: 28,
-    fontWeight: '700',
-    color: '#000',
-    textAlign: 'center',
-    marginBottom: 4,
-  },
-  officialName: {
-    fontSize: 16,
-    color: '#8E8E93',
-    textAlign: 'center',
+    marginBottom: 12,
   },
   infoGrid: {
     paddingHorizontal: 16,
     gap: 12,
   },
   infoCard: {
-    backgroundColor: '#FFFFFF',
     padding: 16,
     borderRadius: 12,
     shadowColor: '#000',
@@ -242,20 +221,12 @@ const styles = StyleSheet.create({
   infoCardTitle: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#8E8E93',
     marginLeft: 8,
     textTransform: 'uppercase',
     letterSpacing: 0.5,
   },
-  infoCardValue: {
-    fontSize: 17,
-    fontWeight: '500',
-    color: '#000',
-    lineHeight: 22,
-  },
   infoCardSubtitle: {
     fontSize: 14,
-    color: '#8E8E93',
     marginTop: 4,
   },
 });

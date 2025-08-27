@@ -92,11 +92,7 @@ class CountryService {
       filteredCountries = filteredCountries.filter(
         (country) =>
           country.name.common.toLowerCase().includes(searchLower) ||
-          country.name.official.toLowerCase().includes(searchLower) ||
-          (country.capital &&
-            country.capital.some((cap) =>
-              cap.toLowerCase().includes(searchLower)
-            ))
+          country.cca3.toLowerCase().includes(searchLower)
       );
     }
 
