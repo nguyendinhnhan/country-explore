@@ -1,5 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { FavoriteCountry } from '../types/Country';
+import { FavoriteCountry } from '@/src/types/Country';
+import { logStorageError } from '@/src/services/ErrorHandler';
 
 class StorageService {
   private static readonly FAVORITES_KEY = 'country_favorites';
@@ -12,7 +13,7 @@ class StorageService {
       const stored = await AsyncStorage.getItem(this.FAVORITES_KEY);
       return stored ? JSON.parse(stored) : [];
     } catch (error) {
-      console.error('Error loading favorites:', error);
+      logStorageError('Error loading favorites', error);
       return [];
     }
   }
@@ -24,7 +25,7 @@ class StorageService {
     try {
       await AsyncStorage.setItem(this.FAVORITES_KEY, JSON.stringify(favorites));
     } catch (error) {
-      console.error('Error saving favorites:', error);
+      logStorageError('Error saving favorites', error);
       throw new Error('Failed to save favorites');
     }
   }
@@ -56,7 +57,7 @@ class StorageService {
       await this.saveFavorites(updatedFavorites);
       return updatedFavorites;
     } catch (error) {
-      console.error('Error adding favorite:', error);
+      logStorageError('Error adding favorite', error);
       throw new Error('Failed to add favorite');
     }
   }
@@ -73,7 +74,7 @@ class StorageService {
       await this.saveFavorites(updatedFavorites);
       return updatedFavorites;
     } catch (error) {
-      console.error('Error removing favorite:', error);
+      logStorageError('Error removing favorite', error);
       throw new Error('Failed to remove favorite');
     }
   }
@@ -93,7 +94,7 @@ class StorageService {
       await this.saveFavorites(updatedFavorites);
       return updatedFavorites;
     } catch (error) {
-      console.error('Error updating favorite note:', error);
+      logStorageError('Error updating favorite note', error);
       throw new Error('Failed to update note');
     }
   }
@@ -106,7 +107,7 @@ class StorageService {
       const favorites = await this.loadFavorites();
       return favorites.some((fav) => fav.cca3 === countryCode);
     } catch (error) {
-      console.error('Error checking favorite status:', error);
+      logStorageError('Error checking favorite status', error);
       return false;
     }
   }
@@ -120,7 +121,7 @@ class StorageService {
       const favorite = favorites.find((fav) => fav.cca3 === countryCode);
       return favorite?.note || '';
     } catch (error) {
-      console.error('Error getting favorite note:', error);
+      logStorageError('Error getting favorite note', error);
       return '';
     }
   }
@@ -132,7 +133,7 @@ class StorageService {
     try {
       await AsyncStorage.removeItem(this.FAVORITES_KEY);
     } catch (error) {
-      console.error('Error clearing favorites:', error);
+      logStorageError('Error clearing favorites', error);
       throw new Error('Failed to clear favorites');
     }
   }

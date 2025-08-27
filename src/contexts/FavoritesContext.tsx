@@ -7,9 +7,12 @@ import React, {
   useMemo,
   useReducer,
 } from 'react';
-import { Alert } from 'react-native';
-import StorageService from '../services/storageService';
-import { Country, FavoriteCountry } from '../types/Country';
+import StorageService from '@/src/services/StorageService';
+import {
+  logStorageError,
+  logUserActionError,
+} from '@/src/services/ErrorHandler';
+import { Country, FavoriteCountry } from '@/src/types/Country';
 
 // Types
 interface FavoritesState {
@@ -119,7 +122,7 @@ export function FavoritesProvider({ children }: FavoritesProviderProps) {
       const message =
         error instanceof Error ? error.message : 'Failed to load favorites';
       dispatch({ type: 'SET_ERROR', payload: message });
-      console.error('Error loading favorites:', error);
+      logStorageError('Error loading favorites', error);
     }
   }, []);
 
@@ -140,7 +143,7 @@ export function FavoritesProvider({ children }: FavoritesProviderProps) {
       const message =
         error instanceof Error ? error.message : 'Failed to add favorite';
       dispatch({ type: 'SET_ERROR', payload: message });
-      Alert.alert('Error', message);
+      logUserActionError('Error adding favorite', error, message);
     }
   }, []);
 
@@ -153,7 +156,7 @@ export function FavoritesProvider({ children }: FavoritesProviderProps) {
       const message =
         error instanceof Error ? error.message : 'Failed to remove favorite';
       dispatch({ type: 'SET_ERROR', payload: message });
-      Alert.alert('Error', message);
+      logUserActionError('Error removing favorite', error, message);
     }
   }, []);
 
@@ -180,7 +183,7 @@ export function FavoritesProvider({ children }: FavoritesProviderProps) {
       const message =
         error instanceof Error ? error.message : 'Failed to update note';
       dispatch({ type: 'SET_ERROR', payload: message });
-      Alert.alert('Error', message);
+      logUserActionError('Error updating note', error, message);
     }
   }, []);
 

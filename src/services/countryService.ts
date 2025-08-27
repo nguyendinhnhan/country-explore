@@ -1,4 +1,5 @@
-import { Country } from '../types/Country';
+import { Country } from '@/src/types/Country';
+import { logApiError } from '@/src/services/ErrorHandler';
 
 const API_BASE_URL = 'https://restcountries.com/v3.1';
 const API_FIELDS =
@@ -56,7 +57,8 @@ class CountryService {
 
       this.isInitialized = true;
     } catch (error) {
-      throw new Error(`Failed to fetch countries: ${error}`);
+      logApiError('Failed to fetch countries', error);
+      throw error instanceof Error ? error : new Error(String(error));
     }
   }
 

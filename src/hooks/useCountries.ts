@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
-import { countryService } from '../services/countryService';
-import { Country } from '../types/Country';
+import { countryService } from '@/src/services/CountryService';
+import { Country } from '@/src/types/Country';
+import { logApiError } from '@/src/services/ErrorHandler';
 
 const ITEMS_PER_PAGE = 20;
 interface UseCountriesOptions {
@@ -57,7 +58,7 @@ export const useCountries = (
           setError('Failed to load countries');
         }
       } catch (err) {
-        console.error('Error loading countries:', err);
+        logApiError('Error loading countries', err);
         setError('Network error occurred');
       } finally {
         setIsLoading(false);
