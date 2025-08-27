@@ -8,11 +8,17 @@ type Options = {
   initialData: Country;
 };
 
+interface UseCountryDetailsResult {
+  details: Country;
+  loading: boolean;
+  fetchCountry: () => Promise<void>;
+}
+
 export default function useCountryDetails(
   code: string | undefined,
   options: Options
-) {
-  const { forceFetch = false, initialData } = options;
+): UseCountryDetailsResult {
+  const { forceFetch = true, initialData } = options;
 
   const [details, setDetails] = useState<Country>(initialData);
   const [loading, setLoading] = useState(false);

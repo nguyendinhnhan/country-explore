@@ -22,21 +22,15 @@ import { useThemeColor } from '@/src/hooks';
 import { ThemedView } from '@/src/components/ThemedView';
 import { Colors } from '@/src/constants/Colors';
 import RegionFilter from '@/src/components/RegionFilter';
-
-const regions: Region[] = [
-  'All',
-  'Africa',
-  'Americas',
-  'Asia',
-  'Europe',
-  'Oceania',
-];
+import { useRegions } from '@/src/hooks/useRegions';
 
 export default function CountriesScreen() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedRegion, setSelectedRegion] = useState<Region>('All');
 
   const tintColor = useThemeColor({}, 'tint');
+
+  const { regions } = useRegions();
 
   const {
     countries,

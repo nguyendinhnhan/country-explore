@@ -60,7 +60,7 @@ describe('useCountries Hook', () => {
     // Mock countryService
     // eslint-disable-next-line @typescript-eslint/no-require-imports
     const { countryService } = require('../../src/services/countryService');
-    countryService.fetchCountries = jest.fn().mockResolvedValue({
+    countryService.getCountries = jest.fn().mockResolvedValue({
       data: mockCountriesData,
       totalCount: mockCountriesData.length,
       hasNextPage: false,
@@ -71,9 +71,6 @@ describe('useCountries Hook', () => {
     jest.resetAllMocks();
   });
 
-  /**
-   * Test 1: Basic hook initialization and data loading
-   */
   it('should initialize with correct default values and load countries', async () => {
     const { result } = renderHook(() => useCountries());
 
@@ -89,23 +86,12 @@ describe('useCountries Hook', () => {
     expect(result.current.countries).toEqual(mockCountriesData);
   });
 
-  /**
-   * Test 2: Search functionality
-   */
-  // NOTE: search and region selection are controlled by the UI layer in the
-  // current implementation. Those responsibilities are tested in integration
-  // or component tests. The hook focuses on fetching/pagination; therefore
-  // we don't assert on search/region setters here.
-
-  /**
-   * Test 4: Load more functionality
-   */
   it('should handle load more correctly', async () => {
     // eslint-disable-next-line @typescript-eslint/no-require-imports
     const { countryService } = require('../../src/services/countryService');
 
     // Mock initial response with hasNextPage
-    countryService.fetchCountries.mockResolvedValueOnce({
+    countryService.getCountries.mockResolvedValueOnce({
       data: mockCountriesData.slice(0, 2),
       totalCount: 3,
       hasNextPage: true,
@@ -119,7 +105,7 @@ describe('useCountries Hook', () => {
     });
 
     // Mock next page response
-    countryService.fetchCountries.mockResolvedValueOnce({
+    countryService.getCountries.mockResolvedValueOnce({
       data: [mockCountriesData[2]],
       totalCount: 3,
       hasNextPage: false,
@@ -136,13 +122,10 @@ describe('useCountries Hook', () => {
     });
   });
 
-  /**
-   * Test 5: Error handling
-   */
   it('should handle errors correctly', async () => {
     // eslint-disable-next-line @typescript-eslint/no-require-imports
     const { countryService } = require('../../src/services/countryService');
-    countryService.fetchCountries.mockRejectedValueOnce(
+    countryService.getCountries.mockRejectedValueOnce(
       new Error('Network error')
     );
 
@@ -155,9 +138,6 @@ describe('useCountries Hook', () => {
     });
   });
 
-  /**
-   * Test 6: Refresh functionality
-   */
   it('should handle refresh correctly', async () => {
     const { result } = renderHook(() => useCountries());
 

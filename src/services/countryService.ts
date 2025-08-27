@@ -1,4 +1,4 @@
-import { Country } from '@/src/types/Country';
+import { Country, Region } from '@/src/types/Country';
 import { logApiError } from '@/src/services/ErrorHandler';
 import {
   transformRawToCountry,
@@ -15,7 +15,7 @@ export interface PaginatedResponse {
   hasNextPage: boolean;
 }
 
-export interface FetchCountriesParams {
+export interface GetCountriesParams {
   page?: number;
   limit?: number;
   search?: string;
@@ -27,7 +27,6 @@ class CountryService {
   private isInitialized = false;
   private cache = new Map<string, PaginatedResponse>();
 
-  // Initialize countries from API once
   private async initializeCountries(): Promise<void> {
     if (this.isInitialized) {
       return;
@@ -62,14 +61,12 @@ class CountryService {
     }
   }
 
-  // Generate cache key for request
-  private getCacheKey(params: FetchCountriesParams): string {
+  private getCacheKey(params: GetCountriesParams): string {
     return `${params.page || 1}-${params.limit || 20}-${params.search || ''}-${params.region || 'All'}`;
   }
 
-  // Simulate paginated API with caching
-  async fetchCountries(
-    params: FetchCountriesParams = {}
+  async getCountries(
+    params: GetCountriesParams = {}
   ): Promise<PaginatedResponse> {
     const { page = 1, limit = 20, search = '', region = 'All' } = params;
 
@@ -129,7 +126,6 @@ class CountryService {
     return result;
   }
 
-  // Get single country by code
   async getCountryByCode(
     code: string,
     forceFetch = false
@@ -174,7 +170,16 @@ class CountryService {
     }
   }
 
-  // Clear cache when needed
+  async getRegions(): Promise<Region[]> {
+    await this.initializeCountries();
+
+    const regions = Array.from(
+      new Set(this.allCountries.map((c) => c.region).filter(Boolean))
+    );
+
+    return ['All', ...regions] as unknown as Region[];
+  }
+
   clearCache(): void {
     this.cache.clear();
   }

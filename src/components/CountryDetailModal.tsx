@@ -45,7 +45,6 @@ export default function CountryDetailModal({
   const iconColor = useThemeColor({}, 'icon');
 
   const { details, loading } = useCountryDetails(country?.cca3, {
-    forceFetch: true,
     initialData: country,
   });
 

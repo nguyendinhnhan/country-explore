@@ -41,7 +41,7 @@ export const useCountries = (
           setIsLoadingMore(true);
         }
 
-        const response = await countryService.fetchCountries({
+        const response = await countryService.getCountries({
           page,
           limit: ITEMS_PER_PAGE,
           search: query,
