@@ -1,16 +1,7 @@
 import React from 'react';
 import { fireEvent, render } from '@testing-library/react-native';
 import RegionFilter from '../../src/components/RegionFilter';
-import type { Region } from '../../src/types/Country';
-
-const regions: Region[] = [
-  'All',
-  'Africa',
-  'Americas',
-  'Asia',
-  'Europe',
-  'Oceania',
-];
+import { regions } from '../../src/data/mockRegions';
 
 describe('RegionFilter Component', () => {
   it('renders all regions and highlights the active one', () => {

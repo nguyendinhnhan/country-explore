@@ -1,24 +1,10 @@
 import { fireEvent, render } from '@testing-library/react-native';
 import React from 'react';
 import CountryListItem from '../../src/components/CountryListItem';
-import type { Country } from '../../src/types/Country';
 
-const mockCountry: Country = {
-  cca3: 'USA',
-  name: {
-    common: 'United States',
-    official: 'United States of America',
-  },
-  capital: ['Washington, D.C.'],
-  region: 'Americas',
-  population: 331900000,
-  flags: {
-    png: 'https://example.com/usa.png',
-    svg: 'https://example.com/usa.svg',
-  },
-  languages: { eng: 'English' },
-  currencies: { USD: { name: 'United States dollar', symbol: '$' } },
-};
+import { mockCountriesData } from '../../src/data/mockCountries';
+
+const mockCountry = mockCountriesData[0];
 
 describe('CountryListItem Component', () => {
   const mockOnPress = jest.fn();

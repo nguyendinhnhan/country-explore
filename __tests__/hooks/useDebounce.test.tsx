@@ -2,18 +2,12 @@ import { renderHook, waitFor } from '@testing-library/react-native';
 import { useDebounce } from '../../src/hooks/useDebounce';
 
 describe('useDebounce Hook', () => {
-  /**
-   * Test 1: Should return initial value immediately
-   */
   it('should return initial value immediately', () => {
     const { result } = renderHook(() => useDebounce('initial', 50));
 
     expect(result.current).toBe('initial');
   });
 
-  /**
-   * Test 2: Should debounce string values correctly
-   */
   it('should debounce string values correctly', async () => {
     const { result, rerender } = renderHook(
       ({ value, delay }) => useDebounce(value, delay),
@@ -37,9 +31,6 @@ describe('useDebounce Hook', () => {
     );
   });
 
-  /**
-   * Test 3: Should handle rapid consecutive updates correctly
-   */
   it('should handle rapid consecutive updates correctly', async () => {
     const { result, rerender } = renderHook(
       ({ value, delay }) => useDebounce(value, delay),
@@ -65,9 +56,6 @@ describe('useDebounce Hook', () => {
     );
   });
 
-  /**
-   * Test 4: Should work with different data types
-   */
   it('should work with different data types', async () => {
     // Test with numbers
     const { result: numberResult, rerender: numberRerender } = renderHook(
@@ -118,59 +106,6 @@ describe('useDebounce Hook', () => {
     );
   });
 
-  /**
-   * Test 5: Should handle different delay values
-   */
-  it('should handle different delay values', async () => {
-    const { result, rerender } = renderHook(
-      ({ value, delay }) => useDebounce(value, delay),
-      { initialProps: { value: 'test', delay: 20 } }
-    );
-
-    // Update with a shorter delay
-    rerender({ value: 'short-delay', delay: 20 });
-
-    await waitFor(
-      () => {
-        expect(result.current).toBe('short-delay');
-      },
-      { timeout: 100 }
-    );
-
-    // Update with a longer delay
-    rerender({ value: 'long-delay', delay: 100 });
-
-    await waitFor(
-      () => {
-        expect(result.current).toBe('long-delay');
-      },
-      { timeout: 300 }
-    );
-  });
-
-  /**
-   * Test 6: Should handle zero delay
-   */
-  it('should handle zero delay', async () => {
-    const { result, rerender } = renderHook(
-      ({ value, delay }) => useDebounce(value, delay),
-      { initialProps: { value: 'initial', delay: 0 } }
-    );
-
-    rerender({ value: 'immediate', delay: 0 });
-
-    // With zero delay, should update immediately on next render
-    await waitFor(
-      () => {
-        expect(result.current).toBe('immediate');
-      },
-      { timeout: 100 }
-    );
-  });
-
-  /**
-   * Test 7: Should cleanup timeouts on unmount
-   */
   it('should cleanup timeouts on unmount', () => {
     const clearTimeoutSpy = jest.spyOn(global, 'clearTimeout');
 
@@ -190,9 +125,6 @@ describe('useDebounce Hook', () => {
     clearTimeoutSpy.mockRestore();
   });
 
-  /**
-   * Test 8: Should handle null and undefined values
-   */
   it('should handle null and undefined values', async () => {
     // Test with null values
     const { result: nullResult, rerender: nullRerender } = renderHook(

@@ -33,6 +33,7 @@ class CountryService {
     }
 
     try {
+      // throw new Error('Simulate a Network Error');
       const response = await fetch(`${API_BASE_URL}/all?fields=${API_FIELDS}`);
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);

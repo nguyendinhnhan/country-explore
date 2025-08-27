@@ -25,14 +25,14 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/11</span>
+                <span class='fraction'>0/10</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/11</span>
+                <span class='fraction'>0/9</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/11</span>
+                <span class='fraction'>0/10</span>
             </div>
         
             
@@ -295,7 +295,12 @@
 <a name='L230'></a><a href='#L230'>230</a>
 <a name='L231'></a><a href='#L231'>231</a>
 <a name='L232'></a><a href='#L232'>232</a>
-<a name='L233'></a><a href='#L233'>233</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L233'></a><a href='#L233'>233</a>
+<a name='L234'></a><a href='#L234'>234</a>
+<a name='L235'></a><a href='#L235'>235</a>
+<a name='L236'></a><a href='#L236'>236</a>
+<a name='L237'></a><a href='#L237'>237</a>
+<a name='L238'></a><a href='#L238'>238</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -321,14 +326,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -338,14 +335,27 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -531,7 +541,6 @@
 import React from 'react';
 import {
   Dimensions,
-  Image,
   Modal,
   SafeAreaView,
   ScrollView,
@@ -540,6 +549,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import { Image } from 'expo-image';
 import { Country } from '../types/Country';
 import {
   formatPopulation,
@@ -551,20 +561,20 @@ import { useThemeColor } from '../hooks';
 import { Colors } from '../constants/Colors';
 import { ThemedText } from './ThemedText';
 import { ThemedView } from './ThemedView';
+import useCountryDetails from '../hooks/useCountryDetails';
+import LoadingState from './LoadingState';
 &nbsp;
 interface CountryDetailModalProps {
-  country: Country | null;
-  visible: boolean;
+  country: Country;
   onClose: () =&gt; void;
-  onFavoritePress?: () =&gt; void;
-  isFavorite?: boolean;
+  onFavoritePress: () =&gt; void;
+  isFavorite: boolean;
 }
 &nbsp;
 const { width: screenWidth } = <span class="cstat-no" title="statement not covered" >Dimensions.get('window');</span>
 &nbsp;
 export default function <span class="fstat-no" title="function not covered" >CountryDetailModal(</span>{
   country,
-  visible,
   onClose,
   onFavoritePress,
   isFavorite = <span class="branch-0 cbranch-no" title="branch not covered" >false,</span>
@@ -573,13 +583,13 @@ export default function <span class="fstat-no" title="function not covered" >Cou
   const itemColor = <span class="cstat-no" title="statement not covered" >useThemeColor({}, 'item');</span>
   const iconColor = <span class="cstat-no" title="statement not covered" >useThemeColor({}, 'icon');</span>
 &nbsp;
-<span class="cstat-no" title="statement not covered" >  if (!country) {</span>
-<span class="cstat-no" title="statement not covered" >    return null;</span>
-  }
+  const { details, loading } = <span class="cstat-no" title="statement not covered" >useCountryDetails(country?.cca3, {</span>
+    initialData: country,
+  });
 &nbsp;
 <span class="cstat-no" title="statement not covered" >  return (</span>
     &lt;Modal
-      visible={visible}
+      visible
       animationType="slide"
       presentationStyle="pageSheet"
       onRequestClose={onClose}
@@ -600,63 +610,68 @@ export default function <span class="fstat-no" title="function not covered" >Cou
 &nbsp;
           &lt;ThemedText type="subtitle"&gt;Country Details&lt;/ThemedText&gt;
 &nbsp;
-          {onFavoritePress &amp;&amp; (
-            &lt;TouchableOpacity
-              style={styles.favoriteButton}
-              onPress={onFavoritePress}
-            &gt;
-              &lt;Ionicons
-                name={isFavorite ? 'star' : 'star-outline'}
-                size={24}
-                color={isFavorite ? Colors.favoriteColor : Colors.primaryColor}
-              /&gt;
-            &lt;/TouchableOpacity&gt;
-          )}
+          &lt;TouchableOpacity
+            style={styles.favoriteButton}
+            onPress={onFavoritePress}
+          &gt;
+            &lt;Ionicons
+              name={isFavorite ? 'star' : 'star-outline'}
+              size={24}
+              color={isFavorite ? Colors.favoriteColor : Colors.primaryColor}
+            /&gt;
+          &lt;/TouchableOpacity&gt;
         &lt;/View&gt;
+        {loading ? (
+          &lt;LoadingState /&gt;
+        ) : (
+          &lt;ScrollView
+            style={styles.content}
+            showsVerticalScrollIndicator={false}
+          &gt;
+            {/* Flag and Basic Info */}
+            &lt;View style={[styles.flagSection, { backgroundColor: itemColor }]}&gt;
+              &lt;Image
+                source={{ uri: details.flags.png }}
+                placeholder={require('../../assets/images/react-logo.png')}
+                style={styles.flagLarge}
+                contentFit="contain"
+              /&gt;
+              &lt;ThemedText type="title"&gt;{details.name.common}&lt;/ThemedText&gt;
+              &lt;ThemedText style={{ color: iconColor }}&gt;
+                {details.name.official}
+              &lt;/ThemedText&gt;
+            &lt;/View&gt;
 &nbsp;
-        &lt;ScrollView style={styles.content} showsVerticalScrollIndicator={false}&gt;
-          {/* Flag and Basic Info */}
-          &lt;View style={[styles.flagSection, { backgroundColor: itemColor }]}&gt;
-            &lt;Image
-              source={{ uri: country.flags.png }}
-              style={styles.flagLarge}
-              resizeMode="contain"
-            /&gt;
-            &lt;ThemedText type="title"&gt;{country.name.common}&lt;/ThemedText&gt;
-            &lt;ThemedText style={{ color: iconColor }}&gt;
-              {country.name.official}
-            &lt;/ThemedText&gt;
-          &lt;/View&gt;
-&nbsp;
-          {/* Info Cards */}
-          &lt;ThemedView style={styles.infoGrid}&gt;
-            &lt;InfoCard
-              icon="location-outline"
-              title="Region"
-              value={country.region}
-            /&gt;
-            &lt;InfoCard
-              icon="business-outline"
-              title="Capital"
-              value={getCapital(country)}
-            /&gt;
-            &lt;InfoCard
-              icon="people-outline"
-              title="Population"
-              value={formatPopulation(country.population)}
-            /&gt;
-            &lt;InfoCard
-              icon="chatbubble-outline"
-              title="Languages"
-              value={getLanguages(country)}
-            /&gt;
-            &lt;InfoCard
-              icon="card-outline"
-              title="Currency"
-              value={getCurrencies(country)}
-            /&gt;
-          &lt;/ThemedView&gt;
-        &lt;/ScrollView&gt;
+            {/* Info Cards */}
+            &lt;ThemedView style={styles.infoGrid}&gt;
+              &lt;InfoCard
+                icon="location-outline"
+                title="Region"
+                value={details.region}
+              /&gt;
+              &lt;InfoCard
+                icon="business-outline"
+                title="Capital"
+                value={getCapital(details)}
+              /&gt;
+              &lt;InfoCard
+                icon="people-outline"
+                title="Population"
+                value={formatPopulation(details.population)}
+              /&gt;
+              &lt;InfoCard
+                icon="chatbubble-outline"
+                title="Languages"
+                value={getLanguages(details)}
+              /&gt;
+              &lt;InfoCard
+                icon="card-outline"
+                title="Currency"
+                value={getCurrencies(details)}
+              /&gt;
+            &lt;/ThemedView&gt;
+          &lt;/ScrollView&gt;
+        )}
       &lt;/SafeAreaView&gt;
     &lt;/Modal&gt;
   );
@@ -766,7 +781,7 @@ const styles = <span class="cstat-no" title="statement not covered" >StyleSheet.
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-08-27T15:21:54.632Z
+                at 2025-08-27T18:43:26.772Z
             </div>
         <script src="../prettify.js"></script>
         <script>

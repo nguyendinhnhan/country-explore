@@ -3,7 +3,7 @@
 <html lang="en">
 
 <head>
-    <title>Code coverage report for services/storageService.ts</title>
+    <title>Code coverage report for services/StorageService.ts</title>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="../prettify.css" />
     <link rel="stylesheet" href="../base.css" />
@@ -19,7 +19,7 @@
 <body>
 <div class='wrapper'>
     <div class='pad1'>
-        <h1><a href="../index.html">All files</a> / <a href="index.html">services</a> storageService.ts</h1>
+        <h1><a href="../index.html">All files</a> / <a href="index.html">services</a> StorageService.ts</h1>
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
@@ -204,7 +204,9 @@
 <a name='L139'></a><a href='#L139'>139</a>
 <a name='L140'></a><a href='#L140'>140</a>
 <a name='L141'></a><a href='#L141'>141</a>
-<a name='L142'></a><a href='#L142'>142</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L142'></a><a href='#L142'>142</a>
+<a name='L143'></a><a href='#L143'>143</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -346,7 +348,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import AsyncStorage from '@react-native-async-storage/async-storage';
-import { FavoriteCountry } from '../types/Country';
+import { FavoriteCountry } from '@/src/types/Country';
+import { logStorageError } from '@/src/services/ErrorHandler';
 &nbsp;
 class StorageService {
   private static readonly FAVORITES_KEY = 'country_favorites';
@@ -359,7 +362,7 @@ class StorageService {
       const stored = await AsyncStorage.getItem(this.FAVORITES_KEY);
       return stored ? JSON.parse(stored) : [];
     } catch (error) {
-<span class="cstat-no" title="statement not covered" >      console.error('Error loading favorites:', error);</span>
+<span class="cstat-no" title="statement not covered" >      logStorageError('Error loading favorites', error);</span>
 <span class="cstat-no" title="statement not covered" >      return [];</span>
     }
   }
@@ -371,7 +374,7 @@ class StorageService {
     try {
       await AsyncStorage.setItem(this.FAVORITES_KEY, JSON.stringify(favorites));
     } catch (error) {
-<span class="cstat-no" title="statement not covered" >      console.error('Error saving favorites:', error);</span>
+<span class="cstat-no" title="statement not covered" >      logStorageError('Error saving favorites', error);</span>
 <span class="cstat-no" title="statement not covered" >      throw new Error('Failed to save favorites');</span>
     }
   }
@@ -403,7 +406,7 @@ class StorageService {
       await this.saveFavorites(updatedFavorites);
       return updatedFavorites;
     } catch (error) {
-<span class="cstat-no" title="statement not covered" >      console.error('Error adding favorite:', error);</span>
+<span class="cstat-no" title="statement not covered" >      logStorageError('Error adding favorite', error);</span>
 <span class="cstat-no" title="statement not covered" >      throw new Error('Failed to add favorite');</span>
     }
   }
@@ -420,7 +423,7 @@ class StorageService {
       await this.saveFavorites(updatedFavorites);
       return updatedFavorites;
     } catch (error) {
-<span class="cstat-no" title="statement not covered" >      console.error('Error removing favorite:', error);</span>
+<span class="cstat-no" title="statement not covered" >      logStorageError('Error removing favorite', error);</span>
 <span class="cstat-no" title="statement not covered" >      throw new Error('Failed to remove favorite');</span>
     }
   }
@@ -440,7 +443,7 @@ class StorageService {
       await this.saveFavorites(updatedFavorites);
       return updatedFavorites;
     } catch (error) {
-<span class="cstat-no" title="statement not covered" >      console.error('Error updating favorite note:', error);</span>
+<span class="cstat-no" title="statement not covered" >      logStorageError('Error updating favorite note', error);</span>
 <span class="cstat-no" title="statement not covered" >      throw new Error('Failed to update note');</span>
     }
   }
@@ -453,7 +456,7 @@ class StorageService {
       const favorites = <span class="cstat-no" title="statement not covered" >await this.loadFavorites();</span>
 <span class="cstat-no" title="statement not covered" >      return favorites.some(<span class="fstat-no" title="function not covered" >(f</span>av) =&gt; <span class="cstat-no" title="statement not covered" >fav.cca3 === countryCode)</span>;</span>
     } catch (error) {
-<span class="cstat-no" title="statement not covered" >      console.error('Error checking favorite status:', error);</span>
+<span class="cstat-no" title="statement not covered" >      logStorageError('Error checking favorite status', error);</span>
 <span class="cstat-no" title="statement not covered" >      return false;</span>
     }
   }
@@ -467,7 +470,7 @@ class StorageService {
       const favorite = <span class="cstat-no" title="statement not covered" >favorites.find(<span class="fstat-no" title="function not covered" >(f</span>av) =&gt; <span class="cstat-no" title="statement not covered" >fav.cca3 === countryCode)</span>;</span>
 <span class="cstat-no" title="statement not covered" >      return favorite?.note || '';</span>
     } catch (error) {
-<span class="cstat-no" title="statement not covered" >      console.error('Error getting favorite note:', error);</span>
+<span class="cstat-no" title="statement not covered" >      logStorageError('Error getting favorite note', error);</span>
 <span class="cstat-no" title="statement not covered" >      return '';</span>
     }
   }
@@ -479,7 +482,7 @@ class StorageService {
 <span class="cstat-no" title="statement not covered" >    try {</span>
 <span class="cstat-no" title="statement not covered" >      await AsyncStorage.removeItem(this.FAVORITES_KEY);</span>
     } catch (error) {
-<span class="cstat-no" title="statement not covered" >      console.error('Error clearing favorites:', error);</span>
+<span class="cstat-no" title="statement not covered" >      logStorageError('Error clearing favorites', error);</span>
 <span class="cstat-no" title="statement not covered" >      throw new Error('Failed to clear favorites');</span>
     }
   }
@@ -493,7 +496,7 @@ export default StorageService;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-08-27T15:21:54.632Z
+                at 2025-08-27T18:43:26.772Z
             </div>
         <script src="../prettify.js"></script>
         <script>

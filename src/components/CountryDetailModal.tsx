@@ -2,7 +2,6 @@ import { Ionicons } from '@expo/vector-icons';
 import React from 'react';
 import {
   Dimensions,
-  Image,
   Modal,
   SafeAreaView,
   ScrollView,
@@ -11,6 +10,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import { Image } from 'expo-image';
 import { Country } from '../types/Country';
 import {
   formatPopulation,
@@ -93,8 +93,9 @@ export default function CountryDetailModal({
             <View style={[styles.flagSection, { backgroundColor: itemColor }]}>
               <Image
                 source={{ uri: details.flags.png }}
+                placeholder={require('../../assets/images/react-logo.png')}
                 style={styles.flagLarge}
-                resizeMode="contain"
+                contentFit="contain"
               />
               <ThemedText type="title">{details.name.common}</ThemedText>
               <ThemedText style={{ color: iconColor }}>

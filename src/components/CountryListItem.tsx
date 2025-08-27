@@ -1,7 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import React, { useState, useEffect } from 'react';
+import { Image } from 'expo-image';
 import {
-  Image,
   StyleSheet,
   Text,
   TextInput,
@@ -70,8 +70,9 @@ function CountryListItem({
       >
         <Image
           source={{ uri: country.flags.png }}
+          placeholder={require('../../assets/images/react-logo.png')}
           style={styles.flag}
-          resizeMode="cover"
+          contentFit="cover"
         />
 
         <View style={styles.infoContainer}>

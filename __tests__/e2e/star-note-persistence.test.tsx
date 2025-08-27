@@ -5,15 +5,9 @@ import {
   FavoritesProvider,
   useFavoritesContext,
 } from '../../src/contexts/FavoritesContext';
+import { mockCountriesData } from '../../src/data/mockCountries';
 
-// minimal mock country
-const mockCountry = {
-  cca3: 'TST',
-  name: { common: 'Testland', official: 'Testlandia' },
-  flags: { png: 'https://example.com/flag.png', svg: '' },
-  region: 'TestRegion',
-  population: 1,
-} as any;
+const mockCountry = mockCountriesData[0];
 
 describe('E2E: favorite + note persistence', () => {
   const wrapper = ({ children }: { children: React.ReactNode }) => (
