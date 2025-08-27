@@ -70,7 +70,6 @@ export default function FavoritesScreen() {
         {selectedCountry && (
           <CountryDetailModal
             country={selectedCountry}
-            visible={true}
             onClose={() => setSelectedCountry(null)}
             onFavoritePress={() => toggleFavorite(selectedCountry)}
             isFavorite={isFavorite(selectedCountry)}

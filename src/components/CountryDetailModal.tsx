@@ -22,20 +22,20 @@ import { useThemeColor } from '../hooks';
 import { Colors } from '../constants/Colors';
 import { ThemedText } from './ThemedText';
 import { ThemedView } from './ThemedView';
+import useCountryDetails from '../hooks/useCountryDetails';
+import LoadingState from './LoadingState';
 
 interface CountryDetailModalProps {
-  country: Country | null;
-  visible: boolean;
+  country: Country;
   onClose: () => void;
-  onFavoritePress?: () => void;
-  isFavorite?: boolean;
+  onFavoritePress: () => void;
+  isFavorite: boolean;
 }
 
 const { width: screenWidth } = Dimensions.get('window');
 
 export default function CountryDetailModal({
   country,
-  visible,
   onClose,
   onFavoritePress,
   isFavorite = false,
@@ -44,13 +44,14 @@ export default function CountryDetailModal({
   const itemColor = useThemeColor({}, 'item');
   const iconColor = useThemeColor({}, 'icon');
 
-  if (!country) {
-    return null;
-  }
+  const { details, loading } = useCountryDetails(country?.cca3, {
+    forceFetch: true,
+    initialData: country,
+  });
 
   return (
     <Modal
-      visible={visible}
+      visible
       animationType="slide"
       presentationStyle="pageSheet"
       onRequestClose={onClose}
@@ -71,63 +72,67 @@ export default function CountryDetailModal({
 
           <ThemedText type="subtitle">Country Details</ThemedText>
 
-          {onFavoritePress && (
-            <TouchableOpacity
-              style={styles.favoriteButton}
-              onPress={onFavoritePress}
-            >
-              <Ionicons
-                name={isFavorite ? 'star' : 'star-outline'}
-                size={24}
-                color={isFavorite ? Colors.favoriteColor : Colors.primaryColor}
-              />
-            </TouchableOpacity>
-          )}
+          <TouchableOpacity
+            style={styles.favoriteButton}
+            onPress={onFavoritePress}
+          >
+            <Ionicons
+              name={isFavorite ? 'star' : 'star-outline'}
+              size={24}
+              color={isFavorite ? Colors.favoriteColor : Colors.primaryColor}
+            />
+          </TouchableOpacity>
         </View>
+        {loading ? (
+          <LoadingState />
+        ) : (
+          <ScrollView
+            style={styles.content}
+            showsVerticalScrollIndicator={false}
+          >
+            {/* Flag and Basic Info */}
+            <View style={[styles.flagSection, { backgroundColor: itemColor }]}>
+              <Image
+                source={{ uri: details.flags.png }}
+                style={styles.flagLarge}
+                resizeMode="contain"
+              />
+              <ThemedText type="title">{details.name.common}</ThemedText>
+              <ThemedText style={{ color: iconColor }}>
+                {details.name.official}
+              </ThemedText>
+            </View>
 
-        <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
-          {/* Flag and Basic Info */}
-          <View style={[styles.flagSection, { backgroundColor: itemColor }]}>
-            <Image
-              source={{ uri: country.flags.png }}
-              style={styles.flagLarge}
-              resizeMode="contain"
-            />
-            <ThemedText type="title">{country.name.common}</ThemedText>
-            <ThemedText style={{ color: iconColor }}>
-              {country.name.official}
-            </ThemedText>
-          </View>
-
-          {/* Info Cards */}
-          <ThemedView style={styles.infoGrid}>
-            <InfoCard
-              icon="location-outline"
-              title="Region"
-              value={country.region}
-            />
-            <InfoCard
-              icon="business-outline"
-              title="Capital"
-              value={getCapital(country)}
-            />
-            <InfoCard
-              icon="people-outline"
-              title="Population"
-              value={formatPopulation(country.population)}
-            />
-            <InfoCard
-              icon="chatbubble-outline"
-              title="Languages"
-              value={getLanguages(country)}
-            />
-            <InfoCard
-              icon="card-outline"
-              title="Currency"
-              value={getCurrencies(country)}
-            />
-          </ThemedView>
-        </ScrollView>
+            {/* Info Cards */}
+            <ThemedView style={styles.infoGrid}>
+              <InfoCard
+                icon="location-outline"
+                title="Region"
+                value={details.region}
+              />
+              <InfoCard
+                icon="business-outline"
+                title="Capital"
+                value={getCapital(details)}
+              />
+              <InfoCard
+                icon="people-outline"
+                title="Population"
+                value={formatPopulation(details.population)}
+              />
+              <InfoCard
+                icon="chatbubble-outline"
+                title="Languages"
+                value={getLanguages(details)}
+              />
+              <InfoCard
+                icon="card-outline"
+                title="Currency"
+                value={getCurrencies(details)}
+              />
+            </ThemedView>
+          </ScrollView>
+        )}
       </SafeAreaView>
     </Modal>
   );

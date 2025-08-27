@@ -1,5 +1,9 @@
 import { Country } from '@/src/types/Country';
 import { logApiError } from '@/src/services/ErrorHandler';
+import {
+  transformRawToCountry,
+  splitValidItems,
+} from '@/src/utils/countryTransform';
 
 const API_BASE_URL = 'https://restcountries.com/v3.1';
 const API_FIELDS =
@@ -37,23 +41,19 @@ class CountryService {
 
       const data = await response.json();
 
+      // Ensure we only keep items with a valid cca3 (our canonical id)
+      const { validItems, skippedCca3s } = splitValidItems(data);
+      if (skippedCca3s.length > 0) {
+        logApiError(
+          `Skipped ${skippedCca3s.length} countries from /all response because they lack cca3`,
+          { skippedCount: skippedCca3s.length, skippedCca3s }
+        );
+      }
+
       // Transform API data to match our Country interface
-      this.allCountries = data.map((country: any) => ({
-        cca3: country.cca3,
-        name: {
-          common: country.name.common,
-          official: country.name.official,
-        },
-        capital: country.capital || [],
-        region: country.region,
-        population: country.population,
-        flags: {
-          png: country.flags.png,
-          svg: country.flags.svg,
-        },
-        languages: country.languages || {},
-        currencies: country.currencies || {},
-      }));
+      this.allCountries = validItems.map((country: any) =>
+        transformRawToCountry(country)
+      );
 
       this.isInitialized = true;
     } catch (error) {
@@ -130,9 +130,48 @@ class CountryService {
   }
 
   // Get single country by code
-  async getCountryByCode(code: string): Promise<Country | null> {
+  async getCountryByCode(
+    code: string,
+    forceFetch = false
+  ): Promise<Country | null> {
     await this.initializeCountries();
-    return this.allCountries.find((country) => country.cca3 === code) || null;
+
+    const cached = this.allCountries.find((country) => country.cca3 === code);
+    if (cached && !forceFetch) {
+      return cached;
+    }
+
+    // Try fetching the single-country endpoint for fresh/more-detailed data
+    try {
+      const resp = await fetch(
+        `${API_BASE_URL}/alpha/${code}?fields=${API_FIELDS}`
+      );
+      if (!resp.ok) {
+        logApiError(
+          `HTTP error fetching country ${code}`,
+          new Error(`status ${resp.status}`)
+        );
+        return cached || null;
+      }
+
+      const data = await resp.json();
+      const raw = Array.isArray(data) ? data[0] : data;
+      if (!raw) return cached || null;
+
+      const transformed: Country = transformRawToCountry(raw);
+
+      // Update local list for subsequent fast lookups
+      const idx = this.allCountries.findIndex(
+        (c) => c.cca3 === transformed.cca3
+      );
+      if (idx >= 0) this.allCountries[idx] = transformed;
+      else this.allCountries.push(transformed);
+
+      return transformed;
+    } catch (err) {
+      logApiError(`Failed to fetch country ${code}`, err);
+      return cached || null;
+    }
   }
 
   // Clear cache when needed
