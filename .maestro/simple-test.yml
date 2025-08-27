@@ -1,0 +1,15 @@
+# appId: com.nguyendinhnhan.countryexplorer
+appId: host.exp.Exponent
+---
+- openLink: exp://127.0.0.1:8081
+- assertVisible: 'All'
+- tapOn: { id: favorite-icon, index: 0 }
+- assertVisible: { id: note-display }
+- tapOn: { id: note-display, index: 0 }
+- inputText: 'Persisted note'
+- pressKey: Enter
+# - hideKeyboard
+- stopApp: host.exp.Exponent
+- openLink: exp://127.0.0.1:8081
+- assertVisible: '.*Persisted note'
+- tapOn: { id: favorite-icon, index: 0 }
