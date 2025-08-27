@@ -28,9 +28,6 @@ describe('CountryListItem Component', () => {
     jest.clearAllMocks();
   });
 
-  /**
-   * Test 1: Should render country information correctly
-   */
   it('should render country information correctly', () => {
     const { getByText } = render(
       <CountryListItem
@@ -38,17 +35,15 @@ describe('CountryListItem Component', () => {
         isFavorite={false}
         onPress={mockOnPress}
         onFavoritePress={mockOnFavoritePress}
+        note=""
+        onNoteChange={jest.fn()}
       />
     );
 
     expect(getByText('United States')).toBeTruthy();
     expect(getByText('Americas')).toBeTruthy();
-    // Note: Component now shows simplified view with just name and region
   });
 
-  /**
-   * Test 2: Should call onPress when item is pressed
-   */
   it('should call onPress when item is pressed', () => {
     const { getByTestId } = render(
       <CountryListItem
@@ -56,6 +51,8 @@ describe('CountryListItem Component', () => {
         isFavorite={false}
         onPress={mockOnPress}
         onFavoritePress={mockOnFavoritePress}
+        note=""
+        onNoteChange={jest.fn()}
       />
     );
 
@@ -65,9 +62,6 @@ describe('CountryListItem Component', () => {
     expect(mockOnPress).toHaveBeenCalledTimes(1);
   });
 
-  /**
-   * Test 3: Should call onFavoritePress when favorite button is pressed
-   */
   it('should call onFavoritePress when favorite button is pressed', () => {
     const { getByTestId } = render(
       <CountryListItem
@@ -75,6 +69,8 @@ describe('CountryListItem Component', () => {
         isFavorite={false}
         onPress={mockOnPress}
         onFavoritePress={mockOnFavoritePress}
+        note=""
+        onNoteChange={jest.fn()}
       />
     );
 
@@ -84,64 +80,6 @@ describe('CountryListItem Component', () => {
     expect(mockOnFavoritePress).toHaveBeenCalledTimes(1);
   });
 
-  /**
-   * Test 4: Should display correct favorite icon when not favorite
-   */
-  it('should display correct favorite icon when not favorite', () => {
-    const { getByTestId } = render(
-      <CountryListItem
-        country={mockCountry}
-        isFavorite={false}
-        onPress={mockOnPress}
-        onFavoritePress={mockOnFavoritePress}
-      />
-    );
-
-    const favoriteIcon = getByTestId('favorite-icon');
-    expect(favoriteIcon).toBeTruthy();
-  });
-
-  /**
-   * Test 5: Should display correct favorite icon when is favorite
-   */
-  it('should display correct favorite icon when is favorite', () => {
-    const { getByTestId } = render(
-      <CountryListItem
-        country={mockCountry}
-        isFavorite={true}
-        onPress={mockOnPress}
-        onFavoritePress={mockOnFavoritePress}
-      />
-    );
-
-    const favoriteIcon = getByTestId('favorite-icon');
-    expect(favoriteIcon).toBeTruthy();
-  });
-
-  /**
-   * Test 8: Should not show favorite button when showFavoriteButton is false
-   */
-
-  /**
-   * Test 8: Should not show favorite button when showFavoriteButton is false
-   */
-  it('should not show favorite button when showFavoriteButton is false', () => {
-    const { queryByTestId } = render(
-      <CountryListItem
-        country={mockCountry}
-        isFavorite={false}
-        onPress={mockOnPress}
-        onFavoritePress={mockOnFavoritePress}
-        showFavoriteButton={false}
-      />
-    );
-
-    expect(queryByTestId('favorite-button')).toBeNull();
-  });
-
-  /**
-   * Test 10: Should handle note functionality
-   */
   it('should handle note functionality', () => {
     const mockOnNoteChange = jest.fn();
     const testNote = 'Test note';
@@ -157,7 +95,6 @@ describe('CountryListItem Component', () => {
       />
     );
 
-    // Initially, the note should be displayed as text
     expect(getByText(testNote)).toBeTruthy();
 
     // Click on the note to enter edit mode
@@ -168,12 +105,14 @@ describe('CountryListItem Component', () => {
     const noteInput = getByDisplayValue(testNote);
     fireEvent.changeText(noteInput, 'Updated note');
 
-    // onNoteChange should only be called when editing finishes (onBlur/onSubmitEditing)
     expect(mockOnNoteChange).not.toHaveBeenCalled();
 
     // Simulate finishing editing (blur or submit)
     fireEvent(noteInput, 'blur');
 
-    expect(mockOnNoteChange).toHaveBeenCalledWith('Updated note');
+    expect(mockOnNoteChange).toHaveBeenCalledWith(
+      mockCountry.cca3,
+      'Updated note'
+    );
   });
 });

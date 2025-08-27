@@ -3,7 +3,7 @@
 <html lang="en">
 
 <head>
-    <title>Code coverage report for types/Country.ts</title>
+    <title>Code coverage report for utils/countryFormatters.ts</title>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="../prettify.css" />
     <link rel="stylesheet" href="../base.css" />
@@ -19,34 +19,34 @@
 <body>
 <div class='wrapper'>
     <div class='pad1'>
-        <h1><a href="../index.html">All files</a> / <a href="index.html">types</a> Country.ts</h1>
+        <h1><a href="../index.html">All files</a> / <a href="index.html">utils</a> countryFormatters.ts</h1>
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/0</span>
+                <span class='fraction'>0/19</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/0</span>
+                <span class='fraction'>0/12</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/0</span>
+                <span class='fraction'>0/5</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/0</span>
+                <span class='fraction'>0/19</span>
             </div>
         
             
@@ -96,75 +96,72 @@
 <a name='L31'></a><a href='#L31'>31</a>
 <a name='L32'></a><a href='#L32'>32</a>
 <a name='L33'></a><a href='#L33'>33</a>
-<a name='L34'></a><a href='#L34'>34</a>
-<a name='L35'></a><a href='#L35'>35</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L34'></a><a href='#L34'>34</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">export interface Country {
-  cca3: string; // 3-letter country code
-  name: {
-    common: string;
-    official: string;
-  };
-  capital?: string[];
-  region: string;
-  population: number;
-  flags: {
-    png: string;
-    svg: string;
-  };
-  languages?: { [key: string]: string };
-  currencies?: { [key: string]: { name: string; symbol: string } };
-}
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { Country } from '../types/Country';
 &nbsp;
-export interface FavoriteCountry extends Country {
-  note?: string;
-  dateAdded: string;
-}
+export const formatPopulation = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >(p</span>opulation: number): string =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >  if (population &gt;= 1000000) {</span>
+<span class="cstat-no" title="statement not covered" >    return `${(population / 1000000).toFixed(1)} million`;</span>
+  } else <span class="cstat-no" title="statement not covered" >if (population &gt;= 1000) {</span>
+<span class="cstat-no" title="statement not covered" >    return `${(population / 1000).toFixed(0)} thousand`;</span>
+  }
+<span class="cstat-no" title="statement not covered" >  return population.toLocaleString();</span>
+};
 &nbsp;
-export type Region =
-  | 'Africa'
-  | 'Americas'
-  | 'Asia'
-  | 'Europe'
-  | 'Oceania'
-  | 'All';
+export const getCapital = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >(c</span>ountry: Country): string =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >  if (!country.capital || country.capital.length === 0) {</span>
+<span class="cstat-no" title="statement not covered" >    return 'N/A';</span>
+  }
+<span class="cstat-no" title="statement not covered" >  return country.capital.join(', ');</span>
+};
 &nbsp;
-export interface SearchFilters {
-  region: Region;
-  searchQuery: string;
-}
+export const getLanguages = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >(c</span>ountry: Country): string =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >  if (!country.languages) {</span>
+<span class="cstat-no" title="statement not covered" >    return 'N/A';</span>
+  }
+<span class="cstat-no" title="statement not covered" >  return Object.values(country.languages).join(', ');</span>
+};
+&nbsp;
+export const getCurrencies = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >(c</span>ountry: Country): string =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >  if (!country.currencies) {</span>
+<span class="cstat-no" title="statement not covered" >    return 'N/A';</span>
+  }
+<span class="cstat-no" title="statement not covered" >  return Object.values(country.currencies)</span>
+    .map(<span class="fstat-no" title="function not covered" >(c</span>urrency) =&gt; <span class="cstat-no" title="statement not covered" >`${currency.name} (${currency.symbol})`)</span>
+    .join(', ');
+};
 &nbsp;</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
