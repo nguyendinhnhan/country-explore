@@ -12,15 +12,18 @@ Brief summary:
 - Tests: updated and expanded (includes e2e).
 - Centralized errors: `ErrorHandler` for logging, user alerts, and retry logic
 
-You can preview the app using the demos below:
+You can view the app demos below, or download the full-quality demo videos from [./demo/videos](./demo/videos)
 
 1. App workflow and dark mode
+
    ![App Demo](./demo/demo-app.gif)
 
 2. Error handling and offline/caching behavior
+
    ![Error Demo](./demo/demo-error.gif)
 
 3. Example end-to-end test using Expo Maestro
+
    ![E2E Demo](./demo/demo-e2e-maestro.gif)
 
 To install the Android build, either scan the QR code below or download directly:
