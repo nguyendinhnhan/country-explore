@@ -97,8 +97,10 @@ export default function CountryDetailModal({
                 style={styles.flagLarge}
                 contentFit="contain"
               />
-              <ThemedText type="title">{details.name.common}</ThemedText>
-              <ThemedText style={{ color: iconColor }}>
+              <ThemedText type="title" style={styles.textCenter}>
+                {details.name.common}
+              </ThemedText>
+              <ThemedText style={[styles.textCenter, { color: iconColor }]}>
                 {details.name.official}
               </ThemedText>
             </View>
@@ -201,6 +203,9 @@ const styles = StyleSheet.create({
     height: screenWidth * 0.6 * 0.6,
     borderRadius: 12,
     marginBottom: 12,
+  },
+  textCenter: {
+    textAlign: 'center',
   },
   infoGrid: {
     paddingHorizontal: 16,

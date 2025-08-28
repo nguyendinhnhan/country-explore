@@ -2,22 +2,51 @@
 
 A React Native app built for the 4-hour test task. Implements all core requirements with TypeScript, custom hooks, and comprehensive testing.
 
+## Improvements in branch `improve-code`
+
+Brief summary:
+
+- Robust flag fallback: uses `expo-image` with a local placeholder.
+- Details hook: `useCountryDetails` fetches details, updates cache, and falls back to initial data on error/unmount.
+- Utilities & theme: country transform helpers and `useThemeColor` for light/dark styling.
+- Tests: updated and expanded (includes e2e).
+- Centralized errors: `ErrorHandler` for logging, user alerts, and retry logic
+
+You can preview the app using the demos below:
+
+1. App workflow and dark mode
+   ![App Demo](./demo/demo-app.gif)
+
+2. Error handling and offline/caching behavior
+   ![Error Demo](./demo/demo-error.gif)
+
+3. Example end-to-end test using Expo Maestro
+   ![E2E Demo](./demo/demo-e2e-maestro.gif)
+
+To install the Android build, either scan the QR code below or download directly:
+
+<img src="./demo/qr-demo.png" alt="Android App QR Code" width="250" />
+
+[Download Android App (direct link)](https://expo.dev/accounts/nguyendinhnhan/projects/country-explorer/builds/23a09d3e-4e65-4f71-89b2-04b921dd9353)
+
+If the QR code doesn't work, please use the direct link above.
 
 ## ✅ Requirements Implemented
 
-| Feature | Status | Implementation |
-|---------|--------|----------------|
-| **Browse Countries** | ✅ | Paginated list from REST Countries API |
-| **Search & Filter** | ✅ | Debounced search + region filtering |
-| **Details Panel** | ✅ | Modal with flag, capital, population, languages |
-| **Favorites & Notes** | ✅ | Star/unstar + personal notes with AsyncStorage |
-| **Error Handling** | ✅ | Retry buttons and error states |
-| **TypeScript** | ✅ | Full type safety |
-| **Custom Hooks** | ✅ | `useCountries`, `useFavorites`, `useDebounce` |
-| **Tests** | ✅ | 35 tests across hooks and components |
-| **Performance** | ✅ | Lazy loading, memoization, debouncing |
+| Feature               | Status | Implementation                                  |
+| --------------------- | ------ | ----------------------------------------------- |
+| **Browse Countries**  | ✅     | Paginated list from REST Countries API          |
+| **Search & Filter**   | ✅     | Debounced search + region filtering             |
+| **Details Panel**     | ✅     | Modal with flag, capital, population, languages |
+| **Favorites & Notes** | ✅     | Star/unstar + personal notes with AsyncStorage  |
+| **Error Handling**    | ✅     | Retry buttons and error states                  |
+| **TypeScript**        | ✅     | Full type safety                                |
+| **Custom Hooks**      | ✅     | `useCountries`, `useFavorites`, `useDebounce`   |
+| **Tests**             | ✅     | 35 tests across hooks and components            |
+| **Performance**       | ✅     | Lazy loading, memoization, debouncing           |
 
 ### Stretch Goals
+
 - ✅ **Local Storage** - Favorites/notes persist across reloads
 
 ## � Getting Started
@@ -33,17 +62,20 @@ A React Native app built for the 4-hour test task. Implements all core requireme
 ### Installation
 
 1. **Clone the repository**
+
    ```bash
    git clone <repository-url>
    cd country-explorer
    ```
 
 2. **Install dependencies**
+
    ```bash
    npm install
    ```
 
 3. **Start the development server**
+
    ```bash
    npx expo start
    ```
@@ -93,19 +125,22 @@ Components → Hooks → Services → API/Storage
 ```
 
 **Key Files**:
+
 - `src/hooks/useCountries.ts` - Country fetching/pagination
 - `src/contexts/FavoritesContext.tsx` - Global favorites state
-- `src/services/countryService.ts` - REST Countries API
-- `src/services/storageService.ts` - AsyncStorage persistence
+- `src/services/CountryService.ts` - REST Countries API
+- `src/services/StorageService.ts` - AsyncStorage persistence
+- `src/hooks/useThemeColor.ts` - Theme helper for light/dark color tokens
+- `src/services/ErrorHandler.ts` - Centralized error handling and reporting
 
 ## ⚖️ 4-Hour Trade-offs
 
-| Prioritized | Simplified | Deferred |
-|-------------|------------|----------|
-| Core features | Basic UI design | Advanced filtering |
-| TypeScript safety | Text-only notes | User accounts |
-| Essential testing | iOS-style UI | Offline sync |
-| Persistence | Basic error handling | Social features |
+| Prioritized       | Simplified           | Deferred           |
+| ----------------- | -------------------- | ------------------ |
+| Core features     | Basic UI design      | Advanced filtering |
+| TypeScript safety | Text-only notes      | User accounts      |
+| Essential testing | iOS-style UI         | Offline sync       |
+| Persistence       | Basic error handling | Social features    |
 
 ---
 
@@ -118,6 +153,7 @@ Given the **4-hour development constraint**, several strategic decisions were ma
 ### 🎯 Prioritized Features
 
 **✅ MUST HAVE (Implemented)**
+
 - Core country browsing and search functionality
 - Favorites with persistence
 - Clean, intuitive UI
@@ -126,6 +162,7 @@ Given the **4-hour development constraint**, several strategic decisions were ma
 - Essential testing coverage
 
 **⚠️ NICE TO HAVE (Simplified)**
+
 - Advanced filtering (only region-based, not by population/area)
 - Basic notes functionality (text only, no rich formatting)
 - Simple UI design (iOS-like, not fully custom)
@@ -133,14 +170,14 @@ Given the **4-hour development constraint**, several strategic decisions were ma
 
 ### 🔧 Technical Trade-offs
 
-| Decision | Trade-off | Reasoning |
-|----------|-----------|-----------|
-| **Expo Router** vs Custom Navigation | Simpler but less flexible | Faster setup, good enough for 2-screen app |
-| **Context + Reducer** vs Redux/Zustand | More boilerplate but built-in | No external dependencies, sufficient for scope |
-| **AsyncStorage** vs SQLite | Less query power | Simpler setup, adequate for key-value storage |
-| **FlatList** vs Advanced Virtualization | Basic optimization | Native optimization sufficient for dataset size |
-| **REST Countries API** vs GraphQL | Less efficient queries | Free, reliable, no setup required |
-| **Inline Styles** vs Styled Components | Less reusable | Faster development, adequate for small app |
+| Decision                                | Trade-off                     | Reasoning                                       |
+| --------------------------------------- | ----------------------------- | ----------------------------------------------- |
+| **Expo Router** vs Custom Navigation    | Simpler but less flexible     | Faster setup, good enough for 2-screen app      |
+| **Context + Reducer** vs Redux/Zustand  | More boilerplate but built-in | No external dependencies, sufficient for scope  |
+| **AsyncStorage** vs SQLite              | Less query power              | Simpler setup, adequate for key-value storage   |
+| **FlatList** vs Advanced Virtualization | Basic optimization            | Native optimization sufficient for dataset size |
+| **REST Countries API** vs GraphQL       | Less efficient queries        | Free, reliable, no setup required               |
+| **Inline Styles** vs Styled Components  | Less reusable                 | Faster development, adequate for small app      |
 
 ### 🎨 UI/UX Decisions
 
@@ -176,6 +213,7 @@ Given the **4-hour development constraint**, several strategic decisions were ma
 ## 🔮 Future Enhancements
 
 ### Short-term (Next Sprint)
+
 - [ ] Covered full unit tests and core flows with e2e testing
 - [ ] Advanced search filters (population, area)
 - [ ] Rich text notes with formatting
@@ -183,6 +221,7 @@ Given the **4-hour development constraint**, several strategic decisions were ma
 - [ ] Export favorites functionality
 
 ### Medium-term (Next Release)
+
 - [ ] Offline-first architecture
 - [ ] User accounts and cloud sync
 - [ ] Social features (sharing, recommendations)
@@ -190,6 +229,7 @@ Given the **4-hour development constraint**, several strategic decisions were ma
 - [ ] Push notifications for country updates
 
 ### Long-term (Future Versions)
+
 - [ ] Multi-language support
 - [ ] Advanced analytics and insights
 - [ ] AR country exploration

@@ -32,9 +32,9 @@ export default function FavoritesScreen() {
     ({ item }) => (
       <CountryListItem
         country={item}
-        onPress={() => setSelectedCountry(item)}
-        onFavoritePress={() => toggleFavorite(item)}
-        onNoteChange={(note) => updateNote(item.cca3, note)}
+        onPress={setSelectedCountry}
+        onFavoritePress={toggleFavorite}
+        onNoteChange={updateNote}
         isFavorite={isFavorite(item)}
         note={getFavoriteNote(item)}
       />
